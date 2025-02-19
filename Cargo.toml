@@ -4,5 +4,5 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-rust-music-theory = "0.2"
+rust-music-theory = { git = "https://github.com/ozankasikci/rust-music-theory.git" }
 rodio = "0.20.1"
