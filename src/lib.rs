@@ -22,3 +22,9 @@ pub fn create_interval(q: Quality, semitone: u8, int: Number) -> Interval{
     let interval = Interval::new(semitone,q, int, None);
     interval
 }
+
+//FIXME: figure out how to deal with return type of from_semitone
+pub fn create_rand_interval() -> Result<Vec<Self>, IntervalError> {
+    let semitone = rand_semitone();
+    let interval = Interval::from_semitone(semitone);
+}
