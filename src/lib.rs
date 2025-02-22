@@ -1,6 +1,6 @@
 extern crate rust_music_theory as rustmt;
 use rustmt::note::{Note,Pitch, NoteLetter};
-use rustmt::interval::{Interval,Number, Quality};
+use rustmt::interval::{Interval, IntervalError, Number, Quality};
 
 pub fn rand_quality() -> Quality {
     let qualities = [Quality::Major, Quality::Minor, Quality::Perfect, Quality::Augmented, Quality::Diminished];
@@ -23,8 +23,8 @@ pub fn create_interval(q: Quality, semitone: u8, int: Number) -> Interval{
     interval
 }
 
-//FIXME: figure out how to deal with return type of from_semitone
-pub fn create_rand_interval() -> Result<Vec<Self>, IntervalError> {
+pub fn create_rand_interval() -> Result<Interval, IntervalError> {
     let semitone = rand_semitone();
-    let interval = Interval::from_semitone(semitone);
+    let interval_result = Interval::from_semitone(semitone);
+    interval_result
 }
