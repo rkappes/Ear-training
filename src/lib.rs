@@ -28,3 +28,15 @@ pub fn create_rand_interval() -> Result<Interval, IntervalError> {
     let interval_result = Interval::from_semitone(semitone);
     interval_result
 }
+
+pub fn create_note_from_rand_interval(root: Note) -> Note {
+    let interval_result = create_rand_interval();
+    let interval = match interval_result {
+        Ok(interval) => interval,
+        Err(_error) => Interval::default(),
+    };
+
+    println!("Interval is {:?}", interval);
+    let new_note = interval.second_note_from(root);
+    new_note
+}
