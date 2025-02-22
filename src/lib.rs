@@ -41,8 +41,8 @@ pub fn create_note_from_rand_interval(root: Note) -> Note {
     new_note
 }
 
-pub fn create_note_from_given_interval(root: Note, interval: Interval, direction: &str) -> Note {
-    
+pub fn create_note_from_given_interval(root: Note, interval: Interval, direction: &mut String) -> Note {
+    direction.make_ascii_lowercase();
     let note =  if direction == "down" {
         interval.second_note_down_from(root)
     }
