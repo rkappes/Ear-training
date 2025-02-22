@@ -40,3 +40,14 @@ pub fn create_note_from_rand_interval(root: Note) -> Note {
     let new_note = interval.second_note_from(root);
     new_note
 }
+
+pub fn create_note_from_given_interval(root: Note, interval: Interval, direction: &str) -> Note {
+    
+    let note =  if direction == "down" {
+        interval.second_note_down_from(root)
+    }
+    else{
+        interval.second_note_from(root)
+    };
+    note
+}
