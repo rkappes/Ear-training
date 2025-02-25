@@ -3,6 +3,21 @@ pub mod intervals {
     use rustmt::note::{Note,Pitch, NoteLetter};
     use rustmt::interval::{Interval, IntervalError, Number, Quality};
 
+    pub fn create_note(letter: &str) -> Note {
+        let result = Pitch::from_str(letter);
+        match result {
+            Some(pitch) => {
+                Note::new(pitch, 4)
+            },
+            None => {
+                println!("Pitch not found from {}", letter);
+                Note::new(Pitch::new(NoteLetter::A,0),4)
+            },
+        }
+        // let pitch = Pitch::new(NoteLetter::A,0);
+        // let note = Note::new(pitch, 4);
+        // note
+    }
     pub fn rand_quality() -> Quality {
         let qualities = [Quality::Major, Quality::Minor, Quality::Perfect, Quality::Augmented, Quality::Diminished];
         let quality = qualities[rand::random_range(..qualities.len())];
