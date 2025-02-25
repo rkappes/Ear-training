@@ -92,9 +92,9 @@ pub mod intervals {
     }
 
     pub fn create_interval_string(interval: &str) -> Interval{
-        println!("In create_Interval_string, interval is {}", interval.trim());
+        println!("In create_Interval_string, interval is {}", interval);
         let semitones: u8;
-        match interval {
+        match interval.trim() {
             "unison" => semitones = 0,
             "m2" => semitones = 1,
             "M2" => semitones =2,
