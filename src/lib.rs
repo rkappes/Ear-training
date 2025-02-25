@@ -3,7 +3,9 @@ pub mod notes{
     use rustmt::note::{Note,Pitch, NoteLetter};
 
     pub fn create_note(letter: &str) -> Note {
-        let result = Pitch::from_str(letter);
+        println!("In create_note, letter is {}", letter);
+        let result = Pitch::from_str(letter.trim());
+        println!("result from_str is {:?}", result);
         match result {
             Some(pitch) => {
                 Note::new(pitch, 4)
@@ -90,6 +92,7 @@ pub mod intervals {
     }
 
     pub fn create_interval_string(interval: &str) -> Interval{
+        println!("In create_Interval_string, interval is {}", interval.trim());
         let semitones: u8;
         match interval {
             "unison" => semitones = 0,
