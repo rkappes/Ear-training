@@ -1,33 +1,65 @@
 extern crate rust_music_theory as rustmt;
 // use ear_training::{create_interval, create_note_from_rand_interval, create_note_from_given_interval, create_rand_interval, rand_interval, rand_quality, rand_semitone};
-use rustmt::note::{Note,Pitch, NoteLetter};
+// use rustmt::note::{Note,Pitch, NoteLetter};
 // use rustmt::interval::{Interval,Number, Quality};
 use ear_training::intervals; 
-extern crate rodio;
-use std::error::Error;
+use ear_training::notes;
+use ear_training::play;
+use std::io;
+// extern crate rodio;
+// use std::error::Error;
 
 fn main() {
-    let pitch = Pitch::new(NoteLetter::A,0);
-    let note1 = Note::new(pitch, 4);
-    let note2 = Note::new(pitch, 4);
+    // let pitch = Pitch::new(NoteLetter::A,0);
+    // let note1 = Note::new(pitch, 4);
+    // let note2 = Note::new(pitch, 4);
     // let interval = Interval::new(semitone, quality, num, None);
     // let interval_result = create_rand_interval();
     // let interval = match interval_result {
     //     Ok(interval) => interval,
     //     Err(_error) => Interval::default(),
     // };
-    println!("Note is {}", note1);
+    // let rand_note = notes::rand_note();
+    // println!("Rand note is {}", rand_note);
+
+    println!("Welcome to the Ear-training tool.");
+
+    println!("Enter a pitch:");
+    let mut root=String::new();
+
+    io::stdin()
+        .read_line(&mut root)
+        .expect("Failed to read line");
+
+    println!("Entered note: {}", root);
+    let root: &str = &root;
+    let note1 = notes::create_note(root);
+    // let note1 = Pitch::from_str("D#");
+    // let note2 = notes::create_note("A");
+
+    println!("Note is {:?}", note1);
     // println!("Interval is {:?}", interval);
 
-    let new_note = intervals::create_note_from_rand_interval(note1); //interval.second_note_from(note);
+    // let new_note = intervals::create_note_from_rand_interval(note1); //interval.second_note_from(note);
+    // println!("new_note is {}", new_note);
 
-    println!("new_note is {}", new_note);
+    println!("Enter an interval:");
+    let mut interval = String::new();
 
-    let interval = intervals::create_interval(  8);
-    let mut direction = String::from("Down");
-    let new_note = intervals::create_note_from_given_interval(note2, interval, &mut direction); //interval.second_note_from(note);
+    io::stdin()
+    .read_line(&mut interval)
+    .expect("Failed to read line");
 
-    println!("new_note is {}", new_note);
+    println!("Entered interval: {}", interval);
+
+    let interval: &str = &interval;
+    let interval = intervals::create_interval_string(interval);
+    println!("Interval created is {:?}", interval);
+
+    // let mut direction = String::from("Down");
+    // let new_note = intervals::create_note_from_given_interval(note2, interval, &mut direction); //interval.second_note_from(note);
+
+    // println!("new_note is {}", new_note);
 }
 
 /* 
