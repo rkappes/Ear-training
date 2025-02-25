@@ -25,7 +25,7 @@ pub mod notes{
         let rand_accidental = accidental[rand::random_range(..accidental.len())];
 
         let note = format!("{}{}",rand_letter, rand_accidental);
-        println!("Note created is {}", note);
+        // println!("Note created is {}", note);
 
         create_note(&note)
     }
@@ -53,7 +53,7 @@ pub mod intervals {
     }
 
     //pub fn create_interval(quality: &str, semitone: u8, interval: i32) -> Interval{
-    pub fn create_interval(semitones: u8) -> Interval{
+    pub fn create_interval_semitones(semitones: u8) -> Interval{
 
         let interval_result = Interval::from_semitone(semitones);
         let interval = match interval_result {
@@ -89,6 +89,27 @@ pub mod intervals {
         interval
     }
 
+    pub fn create_interval_string(interval: &str) -> Interval{
+        let semitones: u8;
+        match interval {
+            "unison" => semitones = 0,
+            "m2" => semitones = 1,
+            "M2" => semitones =2,
+            "m3" => semitones =3,
+            "M3" => semitones =4,
+            "P4" => semitones =5,
+            "D5" => semitones =6,
+            "P5" => semitones =7,
+            "m6" => semitones =8,
+            "M6" => semitones =9,
+            "m7" => semitones =10,
+            "M7" => semitones =11,
+            "octave" => semitones =12,
+            _=> semitones = 0 //TODO: Return an error or do something else?
+        }
+
+        create_interval_semitones(semitones)
+    }
     pub fn create_rand_interval() -> Result<Interval, IntervalError> {
         let semitone = rand_semitone();
         let interval_result = Interval::from_semitone(semitone);
