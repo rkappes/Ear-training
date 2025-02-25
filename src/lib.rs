@@ -1,7 +1,6 @@
-pub mod intervals {
+pub mod notes{
     extern crate rust_music_theory as rustmt;
     use rustmt::note::{Note,Pitch, NoteLetter};
-    use rustmt::interval::{Interval, IntervalError, Number, Quality};
 
     pub fn create_note(letter: &str) -> Note {
         let result = Pitch::from_str(letter);
@@ -18,6 +17,25 @@ pub mod intervals {
         // let note = Note::new(pitch, 4);
         // note
     }
+
+    pub fn rand_note() -> Note {
+        let note_letter = ["C", "D", "E", "F", "G", "A", "B"];
+        let accidental = ["s", "x", "b"];
+        let rand_letter = note_letter[rand::random_range(..note_letter.len())];
+        let rand_accidental = accidental[rand::random_range(..accidental.len())];
+
+        let note = format!("{}{}",rand_letter, rand_accidental);
+        println!("Note created is {}", note);
+
+        create_note(&note)
+    }
+}
+pub mod intervals {
+    extern crate rust_music_theory as rustmt;
+    use rustmt::note::Note;
+    use rustmt::interval::{Interval, IntervalError, Number, Quality};
+
+
     pub fn rand_quality() -> Quality {
         let qualities = [Quality::Major, Quality::Minor, Quality::Perfect, Quality::Augmented, Quality::Diminished];
         let quality = qualities[rand::random_range(..qualities.len())];
