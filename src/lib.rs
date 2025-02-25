@@ -2,24 +2,36 @@ pub mod notes{
     extern crate rust_music_theory as rustmt;
     use rustmt::note::{Note,Pitch, NoteLetter};
 
+    /// Creates a note given a letter representation of the note
+    /// Ex A, D#, Bb...etc.
+    /// In rust-music-theory crate, Notes are created with a Pitch Type
+    /// This function first creates a Pitch from the letter representation
+    /// and then uses that to create a Note type.
+    /// ### Parameters
+    /// - letter: A &str of a note name
+    /// ### Returns
+    /// - A Note type
     pub fn create_note(letter: &str) -> Note {
         println!("In create_note, letter is {}", letter);
         let result = Pitch::from_str(letter.trim());
         println!("result from_str is {:?}", result);
         match result {
             Some(pitch) => {
-                Note::new(pitch, 4)
+                Note::new(pitch, 4) //NOTE: randomize octave?
             },
             None => {
                 println!("Pitch not found from {}", letter);
+                //TODO: Return None instead
                 Note::new(Pitch::new(NoteLetter::A,0),4)
             },
         }
-        // let pitch = Pitch::new(NoteLetter::A,0);
-        // let note = Note::new(pitch, 4);
-        // note
     }
 
+    /// Creates a random note
+    /// Using the 7 possible note letters, and 3 possible accidentals (as used in rust-music-theory crate)
+    /// Randomly selects a combo of the two to create a Note
+    /// ### Returns
+    /// - A random Note Type
     pub fn rand_note() -> Note {
         let note_letter = ["C", "D", "E", "F", "G", "A", "B"];
         let accidental = ["s", "x", "b"];
@@ -37,24 +49,28 @@ pub mod intervals {
     use rustmt::note::Note;
     use rustmt::interval::{Interval, IntervalError, Number, Quality};
 
-
+    /// Returns a random Quality type, using rust-music-theory Quality enum.
     pub fn rand_quality() -> Quality {
         let qualities = [Quality::Major, Quality::Minor, Quality::Perfect, Quality::Augmented, Quality::Diminished];
         let quality = qualities[rand::random_range(..qualities.len())];
         quality
     }
 
+    /// Returns a random interval(2nd, 4th, 6th..etc), using rust-music-theory Number enum.
     pub fn rand_interval() -> Number {
         let intervals = [Number::Unison, Number::Second, Number::Third, Number::Fourth, Number::Fifth, Number::Sixth, Number::Seventh, Number::Octave];
         let interval = intervals[rand::random_range(..intervals.len())];
         interval
     }
 
+    /// Returns a random semitone number (0-12)
     pub fn rand_semitone() -> u8 {
         rand::random_range(0..12)
     }
 
-    //pub fn create_interval(quality: &str, semitone: u8, interval: i32) -> Interval{
+    /// Creates an interval given the number of semitones
+    /// ### Returns
+    /// - An Interval type
     pub fn create_interval_semitones(semitones: u8) -> Interval{
 
         let interval_result = Interval::from_semitone(semitones);
@@ -91,6 +107,13 @@ pub mod intervals {
         interval
     }
 
+    /// Creates an interval given a string value: m3, M6, P5..etc
+    /// Matches the interval to the number of semitones and calls 
+    /// create_interval_semitones
+    /// ### Parameters:
+    /// - a &str of the desired interval
+    /// ### Returns
+    /// - Interval type 
     pub fn create_interval_string(interval: &str) -> Interval{
         println!("In create_Interval_string, interval is {}", interval);
         let semitones: u8;
@@ -113,12 +136,22 @@ pub mod intervals {
 
         create_interval_semitones(semitones)
     }
+
+    /// Creates a random interval by randomly choosing a semitone value (0-12)
+    /// and calling rust-music-theory crate's Interval::from_semitone
+    /// ### Returns
+    /// - a Result type
     pub fn create_rand_interval() -> Result<Interval, IntervalError> {
         let semitone = rand_semitone();
         let interval_result = Interval::from_semitone(semitone);
         interval_result
     }
 
+    ///Creates a note that is a random interval above a given note
+    /// ### Parameters:
+    /// - A note value (the root) as a Note type 
+    /// ### Returns:
+    /// - A Note type (the 2nd note)
     pub fn create_note_from_rand_interval(root: Note) -> Note {
         let interval_result = create_rand_interval();
         let interval = match interval_result {
@@ -131,8 +164,16 @@ pub mod intervals {
         new_note
     }
 
+    /// Creates a note that is a given interval above or below a given note
+    /// ### Parameters:
+    /// - A note value (the root), of type Note 
+    /// - an Interval, of type Interval
+    /// - A direction (up or down)
+    /// ### Returns:
+    /// - A Note type (the 2nd note)
     pub fn create_note_from_given_interval(root: Note, interval: Interval, direction: &mut String) -> Note {
         direction.make_ascii_lowercase();
+        //TODO: add error checking for if direciton is not valid?
         let note =  if direction == "down" {
             interval.second_note_down_from(root)
         }
