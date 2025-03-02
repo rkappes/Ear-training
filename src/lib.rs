@@ -13,7 +13,7 @@ pub mod notes{
     /// - A Note type
     pub fn create_note(letter: &str) -> Note {
         println!("In create_note, letter is {}", letter);
-        let result = Pitch::from_str(letter.trim());
+        let result = Pitch::from_str(letter.trim()); //NOTE: use impl FromStr instead?
         println!("result from_str is {:?}", result);
         match result {
             Some(pitch) => {
@@ -42,6 +42,41 @@ pub mod notes{
         // println!("Note created is {}", note);
 
         create_note(&note)
+    }
+
+    /// Creates the string equilavent of a Note
+    /// # Parameters
+    /// - a note of type Note
+    /// # Returns
+    /// - a string representation of that note. 
+    pub fn get_note_letter(note: Note) -> String {
+        let pitch = note.pitch; 
+        let letter = pitch.letter;
+        let accidental = pitch.accidental;
+        let char_letter: char;
+        let char_accidental: char;
+        match letter {
+            NoteLetter::A => char_letter = 'A',
+            NoteLetter::B => char_letter ='B',
+            NoteLetter::C => char_letter ='C',
+            NoteLetter::D => char_letter ='D',
+            NoteLetter::E => char_letter ='E',
+            NoteLetter::F => char_letter ='F',
+            NoteLetter::G => char_letter ='G',
+        }
+
+        match accidental {
+            1 => char_accidental='#',
+            2 => char_accidental='x',
+            -1 => char_accidental='b',
+            _=> char_accidental = '\0'
+        }
+
+        let mut result = String::new();  // Create an empty String.
+        result.push(char_letter);              // Add the first character.
+        result.push(char_accidental);   
+
+        result
     }
 }
 pub mod intervals {
@@ -186,7 +221,13 @@ pub mod intervals {
 
 pub mod play {
     extern crate rodio;
+    // extern crate rust_music_theory as rustmt;
     use std::error::Error;
+    // use rustmt::note::{Note,Pitch, NoteLetter};
+
+    // fn convert_to_hz(pitch: String) -> f32{
+
+    // }
 
     //Taken from: https://github.com/RustAudio/rodio/blob/master/examples/signal_generator.rs with some minor changes
     fn play_note(freq: f32) -> Result<(), Box<dyn Error>> {
