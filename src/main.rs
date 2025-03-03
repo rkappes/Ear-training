@@ -29,6 +29,7 @@ fn main() {
 
     loop{
         let mut root = String::new();
+        let mut interval = String::new();
         let mut choice = String::new();
         let mut res = String::new();
 
@@ -91,6 +92,26 @@ fn main() {
             //     }
             //     None => println!("Key not found"),
             // }
+        }
+        else if choice == "3"{
+            println!("Enter the interval you want to use. Ex. M3, P5, m6..etc");
+            io::stdin()
+            .read_line(&mut interval)
+            .expect("Failed to read line");
+
+            let root = notes::rand_note();
+            let root_string = notes::get_note_letter(root.clone());
+
+            let interval = intervals::create_interval_string(&interval);
+            let note2 = intervals::create_note_from_given_interval(root, interval, &mut String::from("Up"));
+
+            let note2_string = notes::get_note_letter(note2);
+
+            let root_hz = notes::get_hz(&root_string, &btree);
+            play::play_note(root_hz);
+
+            let note2_hz = notes::get_hz(&note2_string, &btree);
+            play::play_note(note2_hz);
         }
         else{
             println!("Choice not valid")
