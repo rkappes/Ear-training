@@ -43,7 +43,17 @@ fn main() {
         .expect("Failed to read line");
 
         if choice == "1"{
+            let root = notes::rand_note();
+            let note2 = intervals::create_note_from_rand_interval(root.clone());
 
+            let root_string = notes::get_note_letter(root.clone());
+            let note2_string = notes::get_note_letter(note2);
+
+            let root_hz = notes::get_hz(&root_string, &btree);
+            play::play_note(root_hz);
+
+            let note2_hz = notes::get_hz(&note2_string, &btree);
+            play::play_note(note2_hz);
         }
         else if choice == "2" {
             println!("Enter the note you want as the root. Ex. A, D#, Bb..etc");
@@ -56,27 +66,31 @@ fn main() {
             let note2 = intervals::create_note_from_rand_interval(note1);
             let note2_string = notes::get_note_letter(note2);
 
-            let mut freq = btree.get(root);
-            let root_hz: f32;
-            match freq {
-                Some(freq) => {
-                    println!("freq for {} is {}", root, freq);
-                    root_hz = *freq as f32;
-                    play::play_note(root_hz);
-                }
-                None => println!("Key not found"),
-            }
+            // let mut freq = btree.get(root);
+            // let root_hz: f32;
+            // match freq {
+            //     Some(freq) => {
+            //         println!("freq for {} is {}", root, freq);
+            //         root_hz = *freq as f32;
+            //         play::play_note(root_hz);
+            //     }
+            //     None => println!("Key not found"),
+            // }
+            let root_hz = notes::get_hz(root, &btree);
+            play::play_note(root_hz);
 
-            let note2_hz: f32;
-            freq = btree.get(&note2_string);
-            match freq {
-                Some(freq) => {
-                    println!("freq for {} is {}", note2_string, freq);
-                    note2_hz = *freq as f32;
-                    play::play_note(note2_hz);
-                }
-                None => println!("Key not found"),
-            }
+            let note2_hz = notes::get_hz(&note2_string, &btree);
+            play::play_note(note2_hz);
+
+            // freq = btree.get(&note2_string);
+            // match freq {
+            //     Some(freq) => {
+            //         println!("freq for {} is {}", note2_string, freq);
+            //         note2_hz = *freq as f32;
+            //         play::play_note(note2_hz);
+            //     }
+            //     None => println!("Key not found"),
+            // }
         }
         else{
             println!("Choice not valid")
