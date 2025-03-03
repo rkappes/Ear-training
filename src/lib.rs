@@ -1,6 +1,36 @@
 pub mod notes{
     extern crate rust_music_theory as rustmt;
     use rustmt::note::{Note,Pitch, NoteLetter};
+    use std::collections::BTreeMap;
+
+    pub fn create_note_mappings() -> BTreeMap<String,f64>{
+        let mut NoteHz: BTreeMap<String, f64> = BTreeMap::new();
+
+        let notes = [
+            ("C", 261.63),
+            ("C#", 277.18),
+            ("Db", 277.18),
+            ("D", 293.66),
+            ("D#", 311.13),
+            ("Eb", 311.13),
+            ("E", 329.63),
+            ("F", 349.63),
+            ("F#", 369.99),
+            ("Gb", 369.99),
+            ("G", 392.00),
+            ("G#", 415.30),
+            ("Ab", 415.30),
+            ("A", 440.00),
+            ("A#", 466.16),
+            ("Bb", 466.16),
+            ("B", 493.88)
+        ];
+
+        for(note, freq) in &notes {
+            NoteHz.insert(note.to_string(), *freq);
+        }
+        NoteHz
+    }
 
     /// Creates a note given a letter representation of the note
     /// Ex A, D#, Bb...etc.
@@ -221,9 +251,8 @@ pub mod intervals {
 
 pub mod play {
     extern crate rodio;
-    // extern crate rust_music_theory as rustmt;
     use std::error::Error;
-    // use rustmt::note::{Note,Pitch, NoteLetter};
+
 
     // fn convert_to_hz(pitch: String) -> f32{
 
