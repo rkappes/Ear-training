@@ -32,6 +32,19 @@ pub mod notes{
         NoteHz
     }
 
+
+    pub fn get_hz(key: &str, btree: &BTreeMap<String,f64>) -> f32{
+        let mut freq = btree.get(key);
+        let mut note_hz: f32 = 0.0;
+        match freq {
+            Some(freq) => {
+                println!("freq for {} is {}", key, freq);
+                note_hz = *freq as f32;
+            }
+            None => println!("Key not found"),
+        }
+        note_hz
+}
     /// Creates a note given a letter representation of the note
     /// Ex A, D#, Bb...etc.
     /// In rust-music-theory crate, Notes are created with a Pitch Type
