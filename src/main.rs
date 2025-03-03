@@ -25,30 +25,42 @@ fn main() {
     let btree = notes::create_note_mappings();
     println!("{:?}", btree);
 
-    let freq = btree.get("A#");
-    match freq {
-        Some(freq) => println!("freq for A# is {}", freq),
-        None => println!("Key not found"),
-    }
+    // let freq = btree.get("A#");
+    // match freq {
+    //     Some(freq) => println!("freq for A# is {}", freq),
+    //     None => println!("Key not found"),
+    // }
     // println!("Welcome to the Ear-training tool.");
 
-    // println!("Enter a pitch:");
-    // let mut root=String::new();
+    println!("Enter a pitch:");
+    let mut root=String::new();
 
-    // io::stdin()
-    //     .read_line(&mut root)
-    //     .expect("Failed to read line");
+    io::stdin()
+        .read_line(&mut root)
+        .expect("Failed to read line");
 
-    // println!("Entered note: {}", root);
-    // let root: &str = &root;
-    // let note1 = notes::create_note(root);
+    println!("Entered note: {}", root);
+    let root: &str = &root;
+    let note1 = notes::create_note(root);
     // // let note1 = Pitch::from_str("D#");
     // // let note2 = notes::create_note("A");
 
-    // println!("Note is {:?}", note1);
+    println!("Note is {:?}", note1);
 
-    // let note_string = notes::get_note_letter(note1);
-    // println!("Note string is {}", note_string);
+    let note_string = notes::get_note_letter(note1);
+    println!("Note string is {}", note_string);
+
+
+    let freq = btree.get(&note_string);
+    let Hz: f32;
+    match freq {
+        Some(freq) => {
+            println!("freq is {}",freq);
+            Hz = *freq as f32;
+            play::play_note(Hz);
+        }
+        None => println!("Key not found"),
+    }
     // println!("Interval is {:?}", interval);
 
     // let new_note = intervals::create_note_from_rand_interval(note1); //interval.second_note_from(note);
