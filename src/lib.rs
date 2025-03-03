@@ -115,9 +115,11 @@ pub mod notes{
             _=> char_accidental = '\0'
         }
 
-        let mut result = String::new();  // Create an empty String.
-        result.push(char_letter);              // Add the first character.
-        result.push(char_accidental);   
+        let mut result = String::new(); 
+        result.push(char_letter);  
+        if char_accidental != '\0'{           
+            result.push(char_accidental);  
+        } 
 
         result
     }
