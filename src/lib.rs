@@ -158,30 +158,6 @@ pub mod intervals {
             Ok(interval) => interval,
             Err(_error) => Interval::default(),
         };
-    /* 
-        let q = match quality{
-            "perfect" => Quality::Perfect,
-            "major" => Quality::Major,
-            "minor"=> Quality::Minor,
-            "augmented"=> Quality::Augmented,
-            "diminished"=> Quality::Diminished,
-            &_=> Quality::Perfect,
-        };
-
-        let int = match interval{
-            1 => Number::Unison,
-            2 => Number::Second,
-            3 => Number::Third,
-            4 => Number::Fourth,
-            5 => Number::Fifth,
-            6 => Number::Sixth,
-            7 => Number::Seventh,
-            8 => Number::Octave,
-            _ => Number::Unison,
-        };
-
-        let interval = Interval::new(semitone,q, int, None);
-    */
         println!("Interval is {:?}", interval);
 
         interval
