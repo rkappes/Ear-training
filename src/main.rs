@@ -22,39 +22,50 @@ fn main() {
     // let rand_note = notes::rand_note();
     // println!("Rand note is {}", rand_note);
 
-    println!("Welcome to the Ear-training tool.");
+    let btree = notes::create_note_mappings();
+    println!("{:?}", btree);
 
-    println!("Enter a pitch:");
-    let mut root=String::new();
+    let freq = btree.get("A#");
+    match freq {
+        Some(freq) => println!("freq for A# is {}", freq),
+        None => println!("Key not found"),
+    }
+    // println!("Welcome to the Ear-training tool.");
 
-    io::stdin()
-        .read_line(&mut root)
-        .expect("Failed to read line");
+    // println!("Enter a pitch:");
+    // let mut root=String::new();
 
-    println!("Entered note: {}", root);
-    let root: &str = &root;
-    let note1 = notes::create_note(root);
-    // let note1 = Pitch::from_str("D#");
-    // let note2 = notes::create_note("A");
+    // io::stdin()
+    //     .read_line(&mut root)
+    //     .expect("Failed to read line");
 
-    println!("Note is {:?}", note1);
+    // println!("Entered note: {}", root);
+    // let root: &str = &root;
+    // let note1 = notes::create_note(root);
+    // // let note1 = Pitch::from_str("D#");
+    // // let note2 = notes::create_note("A");
+
+    // println!("Note is {:?}", note1);
+
+    // let note_string = notes::get_note_letter(note1);
+    // println!("Note string is {}", note_string);
     // println!("Interval is {:?}", interval);
 
     // let new_note = intervals::create_note_from_rand_interval(note1); //interval.second_note_from(note);
     // println!("new_note is {}", new_note);
 
-    println!("Enter an interval:");
-    let mut interval = String::new();
+    // println!("Enter an interval:");
+    // let mut interval = String::new();
 
-    io::stdin()
-    .read_line(&mut interval)
-    .expect("Failed to read line");
+    // io::stdin()
+    // .read_line(&mut interval)
+    // .expect("Failed to read line");
 
-    println!("Entered interval: {}", interval);
+    // println!("Entered interval: {}", interval);
 
-    let interval: &str = &interval;
-    let interval = intervals::create_interval_string(interval);
-    println!("Interval created is {:?}", interval);
+    // let interval: &str = &interval;
+    // let interval = intervals::create_interval_string(interval);
+    // println!("Interval created is {:?}", interval);
 
     // let mut direction = String::from("Down");
     // let new_note = intervals::create_note_from_given_interval(note2, interval, &mut direction); //interval.second_note_from(note);
