@@ -1,7 +1,3 @@
-extern crate rust_music_theory as rustmt;
-// use ear_training::{create_interval, create_note_from_rand_interval, create_note_from_given_interval, create_rand_interval, rand_interval, rand_quality, rand_semitone};
-// use rustmt::note::{Note,Pitch, NoteLetter};
-// use rustmt::interval::{Interval,Number, Quality};
 use ear_training::intervals; 
 use ear_training::notes;
 use ear_training::play;
@@ -30,37 +26,100 @@ fn main() {
     //     Some(freq) => println!("freq for A# is {}", freq),
     //     None => println!("Key not found"),
     // }
-    // println!("Welcome to the Ear-training tool.");
 
-    println!("Enter a pitch:");
-    let mut root=String::new();
+    loop{
+        let mut root = String::new();
+        let mut choice = String::new();
+        let mut res = String::new();
 
-    io::stdin()
-        .read_line(&mut root)
+        println!("Welcome to the Ear-training tool.");
+        println!("Select an option below by entering the corresponding number");
+        println!("1. Random interval");
+        println!("2. Random Interval from given note");
+        println!("3. Given interval from random note");
+
+        io::stdin()
+        .read_line(&mut choice)
         .expect("Failed to read line");
 
-    println!("Entered note: {}", root);
-    let root: &str = &root;
-    let note1 = notes::create_note(root);
-    // // let note1 = Pitch::from_str("D#");
-    // // let note2 = notes::create_note("A");
+        if choice == "1"{
 
-    println!("Note is {:?}", note1);
-
-    let note_string = notes::get_note_letter(note1);
-    println!("Note string is {}", note_string);
-
-
-    let freq = btree.get(&note_string);
-    let Hz: f32;
-    match freq {
-        Some(freq) => {
-            println!("freq is {}",freq);
-            Hz = *freq as f32;
-            play::play_note(Hz);
         }
-        None => println!("Key not found"),
+        else if choice == "2" {
+            println!("Enter the note you want as the root. Ex. A, D#, Bb..etc");
+            io::stdin()
+            .read_line(&mut root)
+            .expect("Failed to read line");
+
+            let root: &str = &root;
+            let note1= notes::create_note(root);
+            let note2 = intervals::create_note_from_rand_interval(note1);
+            let note2_string = notes::get_note_letter(note2);
+
+            let mut freq = btree.get(root);
+            let root_hz: f32;
+            match freq {
+                Some(freq) => {
+                    println!("freq for {} is {}", root, freq);
+                    root_hz = *freq as f32;
+                    play::play_note(root_hz);
+                }
+                None => println!("Key not found"),
+            }
+
+            let note2_hz: f32;
+            freq = btree.get(&note2_string);
+            match freq {
+                Some(freq) => {
+                    println!("freq for {} is {}", note2_string, freq);
+                    note2_hz = *freq as f32;
+                    play::play_note(note2_hz);
+                }
+                None => println!("Key not found"),
+            }
+        }
+        else{
+            println!("Choice not valid")
+        }
+
+        println!("Again? y/n");
+        io::stdin()
+        .read_line(&mut res)
+        .expect("Failed to read line");
+        if res == "n"{
+            break;
+        }
     }
+
+    // println!("Enter a pitch:");
+    // let mut root=String::new();
+
+    // io::stdin()
+    //     .read_line(&mut root)
+    //     .expect("Failed to read line");
+
+    // println!("Entered note: {}", root);
+    // let root: &str = &root;
+    // let note1: rust_music_theory::note::Note = notes::create_note(root);
+    // // // let note1 = Pitch::from_str("D#");
+    // // // let note2 = notes::create_note("A");
+
+    // println!("Note is {:?}", note1);
+
+    // let note_string = notes::get_note_letter(note1);
+    // println!("Note string is {}", note_string);
+
+
+    // let freq = btree.get(&note_string);
+    // let Hz: f32;
+    // match freq {
+    //     Some(freq) => {
+    //         println!("freq is {}",freq);
+    //         Hz = *freq as f32;
+    //         play::play_note(Hz);
+    //     }
+    //     None => println!("Key not found"),
+    // }
     // println!("Interval is {:?}", interval);
 
     // let new_note = intervals::create_note_from_rand_interval(note1); //interval.second_note_from(note);
