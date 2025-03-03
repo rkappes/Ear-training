@@ -43,7 +43,8 @@ fn main() {
         .read_line(&mut choice)
         .expect("Failed to read line");
 
-        if choice == "1"{
+        println!("choice is {}", choice);
+        if choice.trim() == "1"{
             let root = notes::rand_note();
             let note2 = intervals::create_note_from_rand_interval(root.clone());
 
@@ -56,44 +57,25 @@ fn main() {
             let note2_hz = notes::get_hz(&note2_string, &btree);
             play::play_note(note2_hz);
         }
-        else if choice == "2" {
+        else if choice.trim() == "2" {
             println!("Enter the note you want as the root. Ex. A, D#, Bb..etc");
             io::stdin()
             .read_line(&mut root)
             .expect("Failed to read line");
 
-            let root: &str = &root;
+            let root: &str = &root.trim();
             let note1= notes::create_note(root);
             let note2 = intervals::create_note_from_rand_interval(note1);
             let note2_string = notes::get_note_letter(note2);
 
-            // let mut freq = btree.get(root);
-            // let root_hz: f32;
-            // match freq {
-            //     Some(freq) => {
-            //         println!("freq for {} is {}", root, freq);
-            //         root_hz = *freq as f32;
-            //         play::play_note(root_hz);
-            //     }
-            //     None => println!("Key not found"),
-            // }
             let root_hz = notes::get_hz(root, &btree);
             play::play_note(root_hz);
 
             let note2_hz = notes::get_hz(&note2_string, &btree);
             play::play_note(note2_hz);
 
-            // freq = btree.get(&note2_string);
-            // match freq {
-            //     Some(freq) => {
-            //         println!("freq for {} is {}", note2_string, freq);
-            //         note2_hz = *freq as f32;
-            //         play::play_note(note2_hz);
-            //     }
-            //     None => println!("Key not found"),
-            // }
         }
-        else if choice == "3"{
+        else if choice.trim() == "3"{
             println!("Enter the interval you want to use. Ex. M3, P5, m6..etc");
             io::stdin()
             .read_line(&mut interval)
@@ -102,8 +84,8 @@ fn main() {
             let root = notes::rand_note();
             let root_string = notes::get_note_letter(root.clone());
 
-            let interval = intervals::create_interval_string(&interval);
-            let note2 = intervals::create_note_from_given_interval(root, interval, &mut String::from("Up"));
+            let interval_type = intervals::create_interval_string(&interval.trim());
+            let note2 = intervals::create_note_from_given_interval(root, interval_type, &mut String::from("Up"));
 
             let note2_string = notes::get_note_letter(note2);
 
@@ -121,7 +103,9 @@ fn main() {
         io::stdin()
         .read_line(&mut res)
         .expect("Failed to read line");
-        if res == "n"{
+
+        println!("res is {}", res);
+        if res.trim() == "n"{
             break;
         }
     }
