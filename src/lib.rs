@@ -249,10 +249,66 @@ pub mod intervals {
     }
 }
 
+pub mod chord{
+    extern crate rust_music_theory as rustmt;
+    use rustmt::chord::{Chord, Number, Quality};
+
+    /// Creates an random Number value to be used in chord creation
+    pub fn rand_number() -> Number{
+        let numbers = [Number::Triad, Number::Seventh];
+        let number = numbers[rand::random_range(..numbers.len())];
+        number
+    }
+
+    /// Creates a random quality to be used in chord creation
+    /// chord quality is limited to those for triads
+    pub fn rand_quality_triad() -> Quality {
+        let qualities = [Quality::Major, Quality::Minor, Quality::Diminished, Quality::Augmented]; 
+        let quality = qualities[rand::random_range(..qualities.len())];
+        quality
+    }
+
+    /// Creates a random quality to be used in chord creation
+    /// chord quality is limited to those for seven chords
+    pub fn rand_quality_seventh() -> Quality {
+        let qualities = [Quality::Major, Quality::Minor, Quality::Diminished, Quality::Augmented, Quality::HalfDiminished,Quality::Dominant];
+        let quality = qualities[rand::random_range(..qualities.len())];
+        quality
+    }
+
+    // Creates a chord from a string - Ex "C, E, G"
+    pub fn create_chord(string: & str) -> Chord{ //TODO: specify inversion?
+        Chord::from_string(string)
+    }
+
+    /// Creates a random chord
+    pub fn rand_chord() -> Chord{
+        let number = rand_number();
+        let quality = if number == Number::Triad{
+            rand_quality_triad()
+        }
+        else{
+            rand_quality_seventh()
+        };
+        
+        let pitch = crate::notes::create_rand_pitch();
+
+        Chord::new(pitch, quality, number)
+    } 
+
+    /// Applies a random inversion to a given chord
+    pub fn rand_inversion(chord: Chord) -> Chord {
+        let root = chord.root;
+        let quality = chord.quality;
+        let number = chord.number;
+        let inversion = rand::random_range(1..4);
+        Chord::with_inversion(root, quality, number,inversion)
+    }
+}
 pub mod play {
     extern crate rodio;
     use std::error::Error;
-
+    
     //Taken from: https://github.com/RustAudio/rodio/blob/master/examples/signal_generator.rs with some minor changes
     pub fn play_note(freq: f32) -> Result<(), Box<dyn Error>> {
         use rodio::source::{chirp, Function, SignalGenerator, Source};
