@@ -1,7 +1,11 @@
+extern crate rust_music_theory as rustmt;
 use ear_training::intervals; 
 use ear_training::notes;
 use ear_training::play;
+use ear_training::chord;
+use rustmt::note::Notes;
 use std::io;
+use std::process::exit;
 // extern crate rodio;
 // use std::error::Error;
 
@@ -18,6 +22,13 @@ fn main() {
     // let rand_note = notes::rand_note();
     // println!("Rand note is {}", rand_note);
 
+    // let chord = chord::create_chord("C, E, G");
+    // println!("Chord is {:?}", chord);
+
+    // let rand_chord = chord::rand_chord();
+    // println!("Chord is {:?}", rand_chord);
+
+
     let btree = notes::create_note_mappings();
     println!("{:?}", btree);
 
@@ -30,14 +41,18 @@ fn main() {
     loop{
         let mut root = String::new();
         let mut interval = String::new();
+        let mut chord = String::new();
         let mut choice = String::new();
         let mut res = String::new();
+        
 
         println!("Welcome to the Ear-training tool.");
         println!("Select an option below by entering the corresponding number");
-        println!("1. Random interval");
-        println!("2. Random Interval from given note");
-        println!("3. Given interval from random note");
+        println!("1. Random interval - Guess the interval");
+        println!("2. Random Interval from given note - Guess 2nd note");
+        println!("3. Given interval from random note - ");
+        println!("4. Randomly invert a given chord - Guess the inversion");
+        println!("5. Random chord - guess the chord type");
 
         io::stdin()
         .read_line(&mut choice)
@@ -94,6 +109,22 @@ fn main() {
 
             let note2_hz = notes::get_hz(&note2_string, &btree);
             play::play_note(note2_hz);
+        }
+        else if choice.trim() == "4"{
+            println!("Enter the notes you want to use in the chord. Ex. 'C, E, G'");
+            io::stdin()
+            .read_line(&mut chord)
+            .expect("Failed to read line");
+
+            let chord_type = chord::create_chord(&chord);
+            let chord_inverted = chord::rand_inversion(chord_type);
+            let notes_in_chord = chord_inverted.notes();
+
+            for note in notes_in_chord.into_iter() {
+                let letter = notes::get_note_letter(note);
+                let note_hz = notes::get_hz(&letter, &btree);
+                play::play_note(note_hz);
+            }
         }
         else{
             println!("Choice not valid")
