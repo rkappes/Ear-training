@@ -293,6 +293,8 @@ pub mod chord{
         
         let pitch = crate::notes::create_rand_pitch();
 
+        println!("In rand_chord, pitch is {}, number is {} and quality is {}", pitch, number, quality);
+
         Chord::new(pitch, quality, number)
     } 
 
@@ -307,14 +309,15 @@ pub mod chord{
 }
 pub mod play {
     extern crate rodio;
+    use rodio::source::{Function, SignalGenerator, SineWave, Source};
+    use rodio::{dynamic_mixer, OutputStream, Sink};
+    use std::thread;
+    use std::time::Duration;
     use std::error::Error;
     
-    //Taken from: https://github.com/RustAudio/rodio/blob/master/examples/signal_generator.rs with some minor changes
+    /// Taken from: https://github.com/RustAudio/rodio/blob/master/examples/signal_generator.rs 
+    /// with some minor changes
     pub fn play_note(freq: f32) -> Result<(), Box<dyn Error>> {
-        use rodio::source::{chirp, Function, SignalGenerator, Source};
-        use std::thread;
-        use std::time::Duration;
-
         let (_stream, stream_handle) = rodio::OutputStream::try_default()?; //Builder::open_default_stream()?;
 
         let test_signal_duration = Duration::from_millis(1000);
@@ -331,5 +334,41 @@ pub mod play {
         thread::sleep(interval_duration);
 
         Ok(())
+    }
+
+    // Taken from https://github.com/RustAudio/rodio/blob/f1eaaa4a6346933fc8a58d5fd1ace170946b3a94/examples/mix_multiple_sources.rs
+    pub fn play_notes(){
+        // Construct a dynamic controller and mixer, stream_handle, and sink.
+        let (controller, mixer) = dynamic_mixer::mixer::<f32>(2, 44_100);
+        let (_stream, stream_handle) = OutputStream::try_default().unwrap();
+        let sink = Sink::try_new(&stream_handle).unwrap();
+
+        // Create four unique sources. The frequencies used here correspond
+        // notes in the key of C and in octave 4: C4, or middle C on a piano,
+        // E4, G4, and A4 respectively.
+        let source_c = SineWave::new(261.63)
+            .take_duration(Duration::from_secs_f32(1.))
+            .amplify(0.20);
+        let source_e = SineWave::new(329.63)
+            .take_duration(Duration::from_secs_f32(1.))
+            .amplify(0.20);
+        let source_g = SineWave::new(392.0)
+            .take_duration(Duration::from_secs_f32(1.))
+            .amplify(0.20);
+        let source_a = SineWave::new(440.0)
+            .take_duration(Duration::from_secs_f32(1.))
+            .amplify(0.20);
+
+        // Add sources C, E, G, and A to the mixer controller.
+        controller.add(source_c);
+        controller.add(source_e);
+        controller.add(source_g);
+        controller.add(source_a);
+
+        // Append the dynamic mixer to the sink to play a C major 6th chord.
+        sink.append(mixer);
+
+        // Sleep the thread until sink is empty.
+        sink.sleep_until_end();
     }
 }
