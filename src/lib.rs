@@ -34,6 +34,9 @@ pub mod notes{
 
 
     pub fn get_hz(key: &str, btree: &BTreeMap<String,f64>) -> f32{
+
+        //TODO: handle double sharps - Gx. 
+        // If 'x' detected - remap key to actual note? Gx --> A?
         let mut freq = btree.get(key);
         let mut note_hz: f32 = 0.0;
         match freq {
@@ -45,6 +48,12 @@ pub mod notes{
         }
         note_hz
 }
+
+    pub fn create_rand_pitch() -> Pitch{
+        let integer = rand::random_range(0..12);
+        Pitch::from_u8(integer)
+    }
+
     /// Creates a note given a letter representation of the note
     /// Ex A, D#, Bb...etc.
     /// In rust-music-theory crate, Notes are created with a Pitch Type
@@ -243,11 +252,6 @@ pub mod intervals {
 pub mod play {
     extern crate rodio;
     use std::error::Error;
-
-
-    // fn convert_to_hz(pitch: String) -> f32{
-
-    // }
 
     //Taken from: https://github.com/RustAudio/rodio/blob/master/examples/signal_generator.rs with some minor changes
     pub fn play_note(freq: f32) -> Result<(), Box<dyn Error>> {
