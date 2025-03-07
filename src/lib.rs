@@ -148,12 +148,14 @@ pub mod notes{
             result.push(char_accidental);  
         } 
         result.push_str(&octave);
-        println!("note letter is {}". result);
+        println!("note letter is {}", result);
         result
     }
 }
 pub mod intervals {
     extern crate rust_music_theory as rustmt;
+    use std::string;
+
     use rustmt::note::Note;
     use rustmt::interval::{Interval, IntervalError, Number, Quality};
 
@@ -236,7 +238,7 @@ pub mod intervals {
     /// - A note value (the root) as a Note type 
     /// ### Returns:
     /// - A Note type (the 2nd note)
-    pub fn create_note_from_rand_interval(root: Note) -> Note {
+    pub fn create_note_from_rand_interval(root: Note) -> (Note, Interval) {
         let interval_result = create_rand_interval();
         let interval = match interval_result {
             Ok(interval) => interval,
@@ -245,7 +247,7 @@ pub mod intervals {
 
         println!("Random Interval is {:?}", interval);
         let new_note = interval.second_note_from(root);
-        new_note
+        (new_note, interval)
     }
 
     /// Creates a note that is a given interval above or below a given note
@@ -323,6 +325,7 @@ pub mod chord{
         let quality = chord.quality;
         let number = chord.number;
         let inversion = rand::random_range(1..4);
+        println!("In rand_inversion, inversion is {}", inversion);
         Chord::with_inversion(root, quality, number,inversion)
     }
 }
