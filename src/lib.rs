@@ -7,23 +7,40 @@ pub mod notes{
         let mut NoteHz: BTreeMap<String, f64> = BTreeMap::new();
 
         let notes = [
-            ("C", 261.63),
-            ("C#", 277.18),
-            ("Db", 277.18),
-            ("D", 293.66),
-            ("D#", 311.13),
-            ("Eb", 311.13),
-            ("E", 329.63),
-            ("F", 349.63),
-            ("F#", 369.99),
-            ("Gb", 369.99),
-            ("G", 392.00),
-            ("G#", 415.30),
-            ("Ab", 415.30),
-            ("A", 440.00),
-            ("A#", 466.16),
-            ("Bb", 466.16),
-            ("B", 493.88)
+            ("C4", 261.63),
+            ("C#4", 277.18),
+            ("Db4", 277.18),
+            ("D4", 293.66),
+            ("D#4", 311.13),
+            ("Eb4", 311.13),
+            ("E4", 329.63),
+            ("F4", 349.63),
+            ("F#4", 369.99),
+            ("Gb4", 369.99),
+            ("G4", 392.00),
+            ("G#4", 415.30),
+            ("Ab4", 415.30),
+            ("A4", 440.00),
+            ("A#4", 466.16),
+            ("Bb4", 466.16),
+            ("B4", 493.88),
+            ("C5", 523.25),
+            ("C#5", 554.37),
+            ("Db5", 554.37),
+            ("D5", 587.33),
+            ("D#5", 622.25),
+            ("Eb5", 622.25),
+            ("E5", 659.25),
+            ("F5", 698.46),
+            ("F#5", 739.99),
+            ("Gb5", 739.99),
+            ("G5", 783.99),
+            ("G#5", 830.61),
+            ("Ab5", 830.61),
+            ("A5", 880.00),
+            ("A#5", 932.33),
+            ("Bb5", 932.33),
+            ("B5", 987.77)
         ];
 
         for(note, freq) in &notes {
@@ -103,6 +120,7 @@ pub mod notes{
     /// - a string representation of that note. 
     pub fn get_note_letter(note: Note) -> String {
         let pitch = note.pitch; 
+        let octave = note.octave.to_string();
         let letter = pitch.letter;
         let accidental = pitch.accidental;
         let char_letter: char;
@@ -129,7 +147,8 @@ pub mod notes{
         if char_accidental != '\0'{           
             result.push(char_accidental);  
         } 
-
+        result.push_str(&octave);
+        println!("note letter is {}". result);
         result
     }
 }
