@@ -5,7 +5,6 @@ use ear_training::play;
 use ear_training::chord;
 use rustmt::note::Notes;
 use std::io;
-use std::process::exit;
 // extern crate rodio;
 // use std::error::Error;
 
@@ -27,7 +26,6 @@ fn main() {
 
     // let rand_chord = chord::rand_chord();
     // println!("Chord is {:?}", rand_chord);
-
 
     let btree = notes::create_note_mappings();
     println!("{:?}", btree);
@@ -60,8 +58,9 @@ fn main() {
 
         println!("choice is {}", choice);
         if choice.trim() == "1"{
+            //Guess a random interval
             let root = notes::rand_note();
-            let note2 = intervals::create_note_from_rand_interval(root.clone());
+            let (note2, interval) = intervals::create_note_from_rand_interval(root.clone());
 
             let root_string = notes::get_note_letter(root.clone());
             let note2_string = notes::get_note_letter(note2);
@@ -71,8 +70,12 @@ fn main() {
 
             let note2_hz = notes::get_hz(&note2_string, &btree);
             play::play_note(note2_hz);
+
+            let answer =  format!("{}{}",interval.quality, interval.number);
+            println!("Interval was {}", answer);
         }
         else if choice.trim() == "2" {
+            //Guess 2nd note from random interval applied
             println!("Enter the note you want as the root. Ex. A, D#, Bb..etc");
             io::stdin()
             .read_line(&mut root)
@@ -80,7 +83,7 @@ fn main() {
 
             let root: &str = &root.trim();
             let note1= notes::create_note(root);
-            let note2 = intervals::create_note_from_rand_interval(note1);
+            let (note2, interval) = intervals::create_note_from_rand_interval(note1);
             let note2_string = notes::get_note_letter(note2);
 
             let root_hz = notes::get_hz(root, &btree);
@@ -88,6 +91,9 @@ fn main() {
 
             let note2_hz = notes::get_hz(&note2_string, &btree);
             play::play_note(note2_hz);
+
+            let answer =  format!("{}{}",interval.quality, interval.number);
+            println!("Interval was {}, 2nd note was {}", answer, note2_string);
 
         }
         else if choice.trim() == "3"{
@@ -111,6 +117,7 @@ fn main() {
             play::play_note(note2_hz);
         }
         else if choice.trim() == "4"{
+            //Guess the inversion
             println!("Enter the notes you want to use in the chord. Ex. 'C, E, G'");
             io::stdin()
             .read_line(&mut chord)
@@ -118,13 +125,33 @@ fn main() {
 
             let chord_type = chord::create_chord(&chord);
             let chord_inverted = chord::rand_inversion(chord_type);
+            println!("chord after inversion is {:?}", chord_inverted);
             let notes_in_chord = chord_inverted.notes();
 
             for note in notes_in_chord.into_iter() {
                 let letter = notes::get_note_letter(note);
-                let note_hz = notes::get_hz(&letter, &btree);
-                play::play_note(note_hz);
+                println!("note letter is {}", letter);
+
+                // let note_hz = notes::get_hz(&letter, &btree);
+                // play::play_note(note_hz);
             }
+            println!("inversion is {}", chord_inverted.inversion);
+        }
+        else if choice.trim() == "5"{
+            //Guess the chord type
+            let chord = chord::rand_chord();
+            let notes_in_chord: Vec<rustmt::note::Note> = chord.notes();
+
+            for note in notes_in_chord.into_iter() {
+                let letter = notes::get_note_letter(note);
+                println!("note letter is {}", letter);
+                // let note_hz = notes::get_hz(&letter, &btree);
+                // play::play_note(note_hz);
+            }
+
+            let answer =  format!("{}{}",chord.quality, chord.number);
+            println!("Chord was {}", answer);
+
         }
         else{
             println!("Choice not valid")
