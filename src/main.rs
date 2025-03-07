@@ -83,13 +83,14 @@ fn main() {
 
             let root: &str = &root.trim();
             let note1= notes::create_note(root);
-            let (note2, interval) = intervals::create_note_from_rand_interval(note1);
+            let (note2, interval) = intervals::create_note_from_rand_interval(note1.clone());
             let note2_string = notes::get_note_letter(note2);
 
-            let root_hz = notes::get_hz(root, &btree);
+            let root_string = notes::get_note_letter(note1.clone());
+            let root_hz = notes::get_hz(&root_string, &btree);
             play::play_note(root_hz);
 
-            let note2_hz = notes::get_hz(&note2_string, &btree);
+            let note2_hz = notes::get_hz(&note2_string.trim(), &btree);
             play::play_note(note2_hz);
 
             let answer =  format!("{}{}",interval.quality, interval.number);
