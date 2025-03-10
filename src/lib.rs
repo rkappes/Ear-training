@@ -373,35 +373,33 @@ pub mod play {
     }
 
     // Taken from https://github.com/RustAudio/rodio/blob/f1eaaa4a6346933fc8a58d5fd1ace170946b3a94/examples/mix_multiple_sources.rs
-    pub fn play_notes(){
+    // with some changes to take an vec of notes to play
+    pub fn play_notes(notes: Vec<f32>){
         // Construct a dynamic controller and mixer, stream_handle, and sink.
         let (controller, mixer) = dynamic_mixer::mixer::<f32>(2, 44_100);
         let (_stream, stream_handle) = OutputStream::try_default().unwrap();
         let sink = Sink::try_new(&stream_handle).unwrap();
 
-        // Create four unique sources. The frequencies used here correspond
-        // notes in the key of C and in octave 4: C4, or middle C on a piano,
-        // E4, G4, and A4 respectively.
-        let source_c = SineWave::new(261.63)
+        for i in notes{
+            let new_source = SineWave::new(i)
             .take_duration(Duration::from_secs_f32(1.))
             .amplify(0.20);
-        let source_e = SineWave::new(329.63)
-            .take_duration(Duration::from_secs_f32(1.))
-            .amplify(0.20);
-        let source_g = SineWave::new(392.0)
-            .take_duration(Duration::from_secs_f32(1.))
-            .amplify(0.20);
-        let source_a = SineWave::new(440.0)
-            .take_duration(Duration::from_secs_f32(1.))
-            .amplify(0.20);
+            
+            match stream_handle.play_raw(new_source.clone()) {
+                Ok(_) => {
+                    ()
+                }
+                Err(e) =>{
+                    println!("Error playing note.{} ", e)
+                }
+            }
 
-        // Add sources C, E, G, and A to the mixer controller.
-        controller.add(source_c);
-        controller.add(source_e);
-        controller.add(source_g);
-        controller.add(source_a);
+            let interval_duration = Duration::from_millis(1500);
+            thread::sleep(interval_duration);
+            controller.add(new_source);
+        }
 
-        // Append the dynamic mixer to the sink to play a C major 6th chord.
+        // Append the dynamic mixer to the sink.
         sink.append(mixer);
 
         // Sleep the thread until sink is empty.
