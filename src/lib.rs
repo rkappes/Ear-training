@@ -7,7 +7,7 @@ pub mod notes{
     /// Notes included are ony for octaves 4 and 5
     /// Enharmonic notes are included
     pub fn create_note_mappings() -> BTreeMap<String,f64>{
-        let mut NoteHz: BTreeMap<String, f64> = BTreeMap::new();
+        let mut note_hz: BTreeMap<String, f64> = BTreeMap::new();
 
         let notes = [
             ("Cb4", 246.94),
@@ -64,9 +64,9 @@ pub mod notes{
         ];
 
         for(note, freq) in &notes {
-            NoteHz.insert(note.to_string(), *freq);
+            note_hz.insert(note.to_string(), *freq);
         }
-        NoteHz
+        note_hz
     }
 
     /// Given a pitch name (ex. C, Eb, A#..etc) find the corresponding Hz from the BTree
@@ -77,7 +77,7 @@ pub mod notes{
     /// ### Returns
     /// - a f32 as the hz for the pitch. 
     pub fn get_hz(key: &str, btree: &BTreeMap<String,f64>) -> f32{
-        let mut freq = btree.get(key);
+        let freq = btree.get(key);
         let mut note_hz: f32 = 0.0;
         match freq {
             Some(freq) => {
@@ -167,7 +167,7 @@ pub mod notes{
 pub mod intervals {
     extern crate rust_music_theory as rustmt;
     use rustmt::note::Note;
-    use rustmt::interval::{Interval, IntervalError, Number, Quality};
+    use rustmt::interval::{Interval, IntervalError}; //, Number, Quality};
 
 /* 
     /// Returns a random Quality type, using rust-music-theory Quality enum.
