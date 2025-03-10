@@ -23,7 +23,7 @@ fn main() {
 
     loop{
         let mut root = String::new();
-        let mut interval = String::new();
+        //let mut interval = String::new();
         let mut chord = String::new();
         let mut choice = String::new();
         let mut res = String::new();
@@ -56,10 +56,13 @@ fn main() {
             let note2_hz = notes::get_hz(&note2_string, &btree);
             //play::play_note(note2_hz);
 
-            //TODO: check that hzs are > 0
-            let notes: Vec<f32> = vec![root_hz, note2_hz];
-            play::play_notes(notes);
-
+            if root_hz > 0.0 && note2_hz > 0.0 {
+                let notes: Vec<f32> = vec![root_hz, note2_hz];
+                play::play_notes(notes);
+            }
+            else{
+                println!{"Sorry, failed to get hz for one or more of the notes"};
+            }
             let answer =  format!("{}{}",interval.quality, interval.number);
             println!("Interval was {}", answer);
         }
@@ -82,10 +85,13 @@ fn main() {
                 let note2_hz = notes::get_hz(&note2_string.trim(), &btree);
                 // play::play_note(note2_hz);
     
-                //TODO: check that hzs are > 0
-                let notes: Vec<f32> = vec![root_hz, note2_hz];
-                play::play_notes(notes);
-    
+                if root_hz > 0.0 && note2_hz > 0.0{
+                    let notes: Vec<f32> = vec![root_hz, note2_hz];
+                    play::play_notes(notes);
+                }
+                else{
+                    println!{"Sorry, failed to get hz for one or more of the notes"};
+                }
                 let answer =  format!("{}{}",interval.quality, interval.number);
                 println!("Interval was {}, 2nd note was {}", answer, note2_string);
                 
@@ -140,9 +146,10 @@ fn main() {
 
                 let note_hz = notes::get_hz(&letter, &btree);
 
-                //TODO: check that hzs are > 0
-                notes.push(note_hz);
-                // play::play_note(note_hz);
+                if note_hz > 0.0 {
+                    notes.push(note_hz);
+                    // play::play_note(note_hz);
+                }
             }
             play::play_notes(notes);
 
@@ -160,8 +167,10 @@ fn main() {
                 let note_hz = notes::get_hz(&letter, &btree);
                 //TODO: check that hzs are > 0
 
-                notes.push(note_hz);
+                if note_hz > 0.0 {
+                    notes.push(note_hz);
                 // play::play_note(note_hz);
+                }
             }
             play::play_notes(notes);
 
