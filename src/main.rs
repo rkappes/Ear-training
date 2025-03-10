@@ -27,6 +27,9 @@ fn main() {
     // let rand_chord = chord::rand_chord();
     // println!("Chord is {:?}", rand_chord);
 
+    // let notes: Vec<f32> = vec![261.63, 329.63, 392.00];
+    // play::play_notes(notes);
+ 
     let btree = notes::create_note_mappings();
     println!("{:?}", btree);
 
@@ -66,10 +69,13 @@ fn main() {
             let note2_string = notes::get_note_letter(note2);
 
             let root_hz = notes::get_hz(&root_string, &btree);
-            play::play_note(root_hz);
+            //play::play_note(root_hz);
 
             let note2_hz = notes::get_hz(&note2_string, &btree);
-            play::play_note(note2_hz);
+            //play::play_note(note2_hz);
+
+            let notes: Vec<f32> = vec![root_hz, note2_hz];
+            play::play_notes(notes);
 
             let answer =  format!("{}{}",interval.quality, interval.number);
             println!("Interval was {}", answer);
@@ -88,10 +94,13 @@ fn main() {
 
             let root_string = notes::get_note_letter(note1.clone());
             let root_hz = notes::get_hz(&root_string, &btree);
-            play::play_note(root_hz);
+            // play::play_note(root_hz);
 
             let note2_hz = notes::get_hz(&note2_string.trim(), &btree);
-            play::play_note(note2_hz);
+            // play::play_note(note2_hz);
+
+            let notes: Vec<f32> = vec![root_hz, note2_hz];
+            play::play_notes(notes);
 
             let answer =  format!("{}{}",interval.quality, interval.number);
             println!("Interval was {}, 2nd note was {}", answer, note2_string);
@@ -112,10 +121,10 @@ fn main() {
             let note2_string = notes::get_note_letter(note2);
 
             let root_hz = notes::get_hz(&root_string, &btree);
-            play::play_note(root_hz);
+            // play::play_note(root_hz);
 
             let note2_hz = notes::get_hz(&note2_string, &btree);
-            play::play_note(note2_hz);
+            // play::play_note(note2_hz);
         }
         else if choice.trim() == "4"{
             //Guess the inversion
@@ -129,26 +138,34 @@ fn main() {
             println!("chord after inversion is {:?}", chord_inverted);
             let notes_in_chord = chord_inverted.notes();
 
+            let mut notes: Vec<f32> = Vec::new();
+
             for note in notes_in_chord.into_iter() {
                 let letter = notes::get_note_letter(note);
                 println!("note letter is {}", letter);
 
-                // let note_hz = notes::get_hz(&letter, &btree);
+                let note_hz = notes::get_hz(&letter, &btree);
+                notes.push(note_hz);
                 // play::play_note(note_hz);
             }
+            play::play_notes(notes);
+
             println!("inversion is {}", chord_inverted.inversion);
         }
         else if choice.trim() == "5"{
             //Guess the chord type
             let chord = chord::rand_chord();
             let notes_in_chord: Vec<rustmt::note::Note> = chord.notes();
+            let mut notes: Vec<f32> = Vec::new();
 
             for note in notes_in_chord.into_iter() {
                 let letter = notes::get_note_letter(note);
                 println!("note letter is {}", letter);
-                // let note_hz = notes::get_hz(&letter, &btree);
+                let note_hz = notes::get_hz(&letter, &btree);
+                notes.push(note_hz);
                 // play::play_note(note_hz);
             }
+            play::play_notes(notes);
 
             let answer =  format!("{}{}",chord.quality, chord.number);
             println!("Chord was {}", answer);
@@ -168,7 +185,6 @@ fn main() {
             break;
         }
     }
-
     // println!("Enter a pitch:");
     // let mut root=String::new();
 
