@@ -110,16 +110,19 @@ pub mod notes{
     /// Randomly selects a combo of the two to create a Note
     /// ### Returns
     /// - An option Note Type
-    pub fn rand_note() -> Option<Note> {
-        let note_letter = ["C", "D", "E", "F", "G", "A", "B"];
-        let accidental = ["s", "x", "b"];
-        let rand_letter = note_letter[rand::random_range(..note_letter.len())];
-        let rand_accidental = accidental[rand::random_range(..accidental.len())];
+    pub fn rand_note() -> Note {
+        // let note_letter = ["C", "D", "E", "F", "G", "A", "B"];
+        // let accidental = ["s", "x", "b"];
+        // let rand_letter = note_letter[rand::random_range(..note_letter.len())];
+        // let rand_accidental = accidental[rand::random_range(..accidental.len())];
 
-        let note = format!("{}{}",rand_letter, rand_accidental);
-        // println!("Note created is {}", note);
+        // let note = format!("{}{}",rand_letter, rand_accidental);
+        // // println!("Note created is {}", note);
 
-        create_note(&note)
+        // create_note(&note)
+
+        let pitch = create_rand_pitch();
+        Note::new(pitch,4)
     }
 
     /// Creates the string equilavent of a Note
