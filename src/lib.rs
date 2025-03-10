@@ -3,6 +3,9 @@ pub mod notes{
     use rustmt::note::{Note,Pitch, NoteLetter};
     use std::collections::BTreeMap;
 
+    /// Creates a BTree that will be used to find the corresponding Hz for a given pitch
+    /// Notes included are ony for octaves 4 and 5
+    /// Enharmonic notes are included
     pub fn create_note_mappings() -> BTreeMap<String,f64>{
         let mut NoteHz: BTreeMap<String, f64> = BTreeMap::new();
 
@@ -66,7 +69,13 @@ pub mod notes{
         NoteHz
     }
 
-
+    /// Given a pitch name (ex. C, Eb, A#..etc) find the corresponding Hz from the BTree
+    /// If the pitch name is not found, Hz of 0 is returned
+    /// ### Parameters
+    ///  - key: the pitch name
+    /// - btree: the created BTree of notes/pitches
+    /// ### Returns
+    /// - a f32 as the hz for the pitch. 
     pub fn get_hz(key: &str, btree: &BTreeMap<String,f64>) -> f32{
         let mut freq = btree.get(key);
         let mut note_hz: f32 = 0.0;
@@ -78,8 +87,11 @@ pub mod notes{
             None => println!("Hz for note {} not found", key),
         }
         note_hz
-}
+    }
 
+    /// Creates a random pitch by using a random number of semitones (0-11)
+    /// ### Returns
+    /// - A Pitch type
     pub fn create_rand_pitch() -> Pitch{
         let integer = rand::random_range(0..12);
         Pitch::from_u8(integer)
@@ -93,7 +105,7 @@ pub mod notes{
     /// ### Parameters
     /// - letter: A &str of a note name
     /// ### Returns
-    /// - A Note type
+    /// - An Option of type Note
     pub fn create_note(letter: &str) -> Option<Note> {
         println!("In create_note, letter is {}", letter);
         if let Some(pitch) = Pitch::from_str(letter.trim()){ //NOTE: use impl FromStr instead?
@@ -105,27 +117,15 @@ pub mod notes{
         }
     }
 
-    /// Creates a random note
-    /// Using the 7 possible note letters, and 3 possible accidentals (as used in rust-music-theory crate)
-    /// Randomly selects a combo of the two to create a Note
+    /// Creates a random note in octave 4
     /// ### Returns
-    /// - An option Note Type
+    /// - A Note
     pub fn rand_note() -> Note {
-        // let note_letter = ["C", "D", "E", "F", "G", "A", "B"];
-        // let accidental = ["s", "x", "b"];
-        // let rand_letter = note_letter[rand::random_range(..note_letter.len())];
-        // let rand_accidental = accidental[rand::random_range(..accidental.len())];
-
-        // let note = format!("{}{}",rand_letter, rand_accidental);
-        // // println!("Note created is {}", note);
-
-        // create_note(&note)
-
         let pitch = create_rand_pitch();
         Note::new(pitch,4)
     }
 
-    /// Creates the string equilavent of a Note
+    /// Creates the string representation (aka name) of a Note
     /// # Parameters
     /// - a note of type Note
     /// # Returns
@@ -166,11 +166,10 @@ pub mod notes{
 }
 pub mod intervals {
     extern crate rust_music_theory as rustmt;
-    use std::string;
-
     use rustmt::note::Note;
     use rustmt::interval::{Interval, IntervalError, Number, Quality};
 
+/* 
     /// Returns a random Quality type, using rust-music-theory Quality enum.
     fn rand_quality() -> Quality {
         let qualities = [Quality::Major, Quality::Minor, Quality::Perfect, Quality::Augmented, Quality::Diminished];
@@ -184,8 +183,10 @@ pub mod intervals {
         let interval = intervals[rand::random_range(..intervals.len())];
         interval
     }
-
-    /// Returns a random semitone number (0-12)
+*/
+    /// Returns a random number (0-12) to be used as the number of semitones
+    /// ### Returns
+    /// - number as u8
     fn rand_semitone() -> u8 {
         rand::random_range(0..12)
     }
@@ -239,7 +240,7 @@ pub mod intervals {
     /// Creates a random interval by randomly choosing a semitone value (0-12)
     /// and calling rust-music-theory crate's Interval::from_semitone
     /// ### Returns
-    /// - a Result type
+    /// - a Result type for Interval
     fn create_rand_interval() -> Result<Interval, IntervalError> {
         let semitone = rand_semitone();
         let interval_result = Interval::from_semitone(semitone);
@@ -250,7 +251,7 @@ pub mod intervals {
     /// ### Parameters:
     /// - A note value (the root) as a Note type 
     /// ### Returns:
-    /// - A Note type (the 2nd note)
+    /// - A tuple of a Note type (the 2nd note) and the random interval used
     pub fn create_note_from_rand_interval(root: Note) -> (Note, Interval) {
         let interval_result = create_rand_interval();
         let interval = match interval_result {
@@ -288,34 +289,48 @@ pub mod chord{
     use rustmt::chord::{Chord, Number, Quality};
 
     /// Creates an random Number value to be used in chord creation
+    /// This 'Number' is an enum of chord types from rust-music-theory Chord::Number
+    /// ### Returns
+    /// - a Number, aka chord type
     fn rand_number() -> Number{
         let numbers = [Number::Triad, Number::Seventh];
         let number = numbers[rand::random_range(..numbers.len())];
         number
     }
 
-    /// Creates a random quality to be used in chord creation
-    /// chord quality is limited to those for triads
+    /// Creates a random quality to be used in triad chord creation
+    /// The 'Quality' is an enum of chord qualites from rust-music-theory
+    /// In this function, chord quality options are limited to those for triads
+    /// ### Returns
+    /// - a chord Quality
     fn rand_quality_triad() -> Quality {
         let qualities = [Quality::Major, Quality::Minor, Quality::Diminished, Quality::Augmented]; 
         let quality = qualities[rand::random_range(..qualities.len())];
         quality
     }
 
-    /// Creates a random quality to be used in chord creation
-    /// chord quality is limited to those for seven chords
+    /// Creates a random quality to be used in seven chord creation
+    /// The 'Quality' is an enum of chord qualites from rust-music-theory
+    /// In this function, chord quality options are limited to those for seven chords
+    /// ### Returns
+    /// - a chord Quality
     fn rand_quality_seventh() -> Quality {
         let qualities = [Quality::Major, Quality::Minor, Quality::Diminished, Quality::Augmented, Quality::HalfDiminished,Quality::Dominant];
         let quality = qualities[rand::random_range(..qualities.len())];
         quality
     }
 
-    // Creates a chord from a string - Ex "C, E, G"
-    pub fn create_chord(string: & str) -> Chord{ //TODO: specify inversion?
+    /// Creates a chord from a string - Ex "C, E, G"
+    /// Is functionaly a wrapper function for Chord::from_string
+    /// ### Returns
+    /// - a Chord
+    pub fn create_chord(string: & str) -> Chord{
         Chord::from_string(string)
     }
 
     /// Creates a random chord
+    /// ### Returns
+    /// - a chord type
     pub fn rand_chord() -> Chord{
         let number = rand_number();
         let quality = if number == Number::Triad{
@@ -333,6 +348,9 @@ pub mod chord{
     } 
 
     /// Applies a random inversion to a given chord
+    /// Inversion are: 0 (root), 1 (first inversion), 2 (second inversion), 3 (third inversion - seven chords only)
+    /// ### Returns
+    /// - a chord type
     pub fn rand_inversion(chord: Chord) -> Chord {
         let root = chord.root;
         let quality = chord.quality;
@@ -344,35 +362,16 @@ pub mod chord{
 }
 pub mod play {
     extern crate rodio;
-    use rodio::source::{Function, SignalGenerator, SineWave, Source};
+    use rodio::source::{SineWave, Source};
     use rodio::{dynamic_mixer, OutputStream, Sink};
     use std::thread;
     use std::time::Duration;
-    use std::error::Error;
     
-    /// Taken from: https://github.com/RustAudio/rodio/blob/master/examples/signal_generator.rs 
-    /// with some minor changes
-    pub fn play_note(freq: f32) -> Result<(), Box<dyn Error>> {
-        let (_stream, stream_handle) = rodio::OutputStream::try_default()?; //Builder::open_default_stream()?;
-
-        let test_signal_duration = Duration::from_millis(1000);
-        let interval_duration = Duration::from_millis(1500);
-        let sample_rate = rodio::cpal::SampleRate(48000);
-
-        println!("Playing {} Hz tone", freq);
-        stream_handle.play_raw(
-            SignalGenerator::new(sample_rate, freq, Function::Sine)
-                .amplify(0.1)
-                .take_duration(test_signal_duration),
-        )?;
-
-        thread::sleep(interval_duration);
-
-        Ok(())
-    }
-
-    // Taken from https://github.com/RustAudio/rodio/blob/f1eaaa4a6346933fc8a58d5fd1ace170946b3a94/examples/mix_multiple_sources.rs
-    // with some changes to take an vec of notes to play
+    /// Plays the given pitches individually and together
+    /// Source: https://github.com/RustAudio/rodio/blob/f1eaaa4a6346933fc8a58d5fd1ace170946b3a94/examples/mix_multiple_sources.rs
+    /// Changed made to take an vec of note frequencies to play
+    /// ### Parameters
+    /// - A vec of f32 types which should be note frequencies
     pub fn play_notes(notes: Vec<f32>){
         // Construct a dynamic controller and mixer, stream_handle, and sink.
         let (controller, mixer) = dynamic_mixer::mixer::<f32>(2, 44_100);
@@ -404,4 +403,29 @@ pub mod play {
         // Sleep the thread until sink is empty.
         sink.sleep_until_end();
     }
+
+    // Function not used, but left here as it was used as reference for play_notes function above
+    // Source: https://github.com/RustAudio/rodio/blob/master/examples/signal_generator.rs 
+    /* 
+    fn play_note(freq: f32) -> Result<(), Box<dyn Error>> {
+        let (_stream, stream_handle) = rodio::OutputStream::try_default()?; //Builder::open_default_stream()?;
+
+        let test_signal_duration = Duration::from_millis(1000);
+        let interval_duration = Duration::from_millis(1500);
+        let sample_rate = rodio::cpal::SampleRate(48000);
+
+        println!("Playing {} Hz tone", freq);
+        stream_handle.play_raw(
+            SignalGenerator::new(sample_rate, freq, Function::Sine)
+                .amplify(0.1)
+                .take_duration(test_signal_duration),
+        )?;
+
+        thread::sleep(interval_duration);
+
+        Ok(())
+    }
+    */
+
+    
 }
