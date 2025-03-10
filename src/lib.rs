@@ -75,7 +75,7 @@ pub mod notes{
                 println!("freq for {} is {}", key, freq);
                 note_hz = *freq as f32;
             }
-            None => println!("Key not found"),
+            None => println!("Hz for note {} not found", key),
         }
         note_hz
 }
@@ -94,19 +94,14 @@ pub mod notes{
     /// - letter: A &str of a note name
     /// ### Returns
     /// - A Note type
-    pub fn create_note(letter: &str) -> Note {
+    pub fn create_note(letter: &str) -> Option<Note> {
         println!("In create_note, letter is {}", letter);
-        let result = Pitch::from_str(letter.trim()); //NOTE: use impl FromStr instead?
-        println!("result from_str is {:?}", result);
-        match result {
-            Some(pitch) => {
-                Note::new(pitch, 4) //NOTE: randomize octave?
-            },
-            None => {
-                println!("Pitch not found from {}", letter);
-                //TODO: Return None instead
-                Note::new(Pitch::new(NoteLetter::A,0),4)
-            },
+        if let Some(pitch) = Pitch::from_str(letter.trim()){ //NOTE: use impl FromStr instead?
+        //println!("result from_str is {:?}", pitch);
+        //match result {
+            Some(Note::new(pitch, 4)) 
+        }else{
+            None
         }
     }
 
@@ -114,8 +109,8 @@ pub mod notes{
     /// Using the 7 possible note letters, and 3 possible accidentals (as used in rust-music-theory crate)
     /// Randomly selects a combo of the two to create a Note
     /// ### Returns
-    /// - A random Note Type
-    pub fn rand_note() -> Note {
+    /// - An option Note Type
+    pub fn rand_note() -> Option<Note> {
         let note_letter = ["C", "D", "E", "F", "G", "A", "B"];
         let accidental = ["s", "x", "b"];
         let rand_letter = note_letter[rand::random_range(..note_letter.len())];
@@ -193,6 +188,7 @@ pub mod intervals {
     }
 
     /// Creates an interval given the number of semitones
+    /// If it fails to create an interval from the given semitones, defaults to unison
     /// ### Returns
     /// - An Interval type
     pub fn create_interval_semitones(semitones: u8) -> Interval{
