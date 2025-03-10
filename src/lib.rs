@@ -172,21 +172,21 @@ pub mod intervals {
     use rustmt::interval::{Interval, IntervalError, Number, Quality};
 
     /// Returns a random Quality type, using rust-music-theory Quality enum.
-    pub fn rand_quality() -> Quality {
+    fn rand_quality() -> Quality {
         let qualities = [Quality::Major, Quality::Minor, Quality::Perfect, Quality::Augmented, Quality::Diminished];
         let quality = qualities[rand::random_range(..qualities.len())];
         quality
     }
 
     /// Returns a random interval(2nd, 4th, 6th..etc), using rust-music-theory Number enum.
-    pub fn rand_interval() -> Number {
+    fn rand_interval() -> Number {
         let intervals = [Number::Unison, Number::Second, Number::Third, Number::Fourth, Number::Fifth, Number::Sixth, Number::Seventh, Number::Octave];
         let interval = intervals[rand::random_range(..intervals.len())];
         interval
     }
 
     /// Returns a random semitone number (0-12)
-    pub fn rand_semitone() -> u8 {
+    fn rand_semitone() -> u8 {
         rand::random_range(0..12)
     }
 
@@ -194,7 +194,7 @@ pub mod intervals {
     /// If it fails to create an interval from the given semitones, defaults to unison
     /// ### Returns
     /// - An Interval type
-    pub fn create_interval_semitones(semitones: u8) -> Interval{
+    fn create_interval_semitones(semitones: u8) -> Interval{
 
         let interval_result = Interval::from_semitone(semitones);
         let interval = match interval_result {
@@ -240,7 +240,7 @@ pub mod intervals {
     /// and calling rust-music-theory crate's Interval::from_semitone
     /// ### Returns
     /// - a Result type
-    pub fn create_rand_interval() -> Result<Interval, IntervalError> {
+    fn create_rand_interval() -> Result<Interval, IntervalError> {
         let semitone = rand_semitone();
         let interval_result = Interval::from_semitone(semitone);
         interval_result
@@ -288,7 +288,7 @@ pub mod chord{
     use rustmt::chord::{Chord, Number, Quality};
 
     /// Creates an random Number value to be used in chord creation
-    pub fn rand_number() -> Number{
+    fn rand_number() -> Number{
         let numbers = [Number::Triad, Number::Seventh];
         let number = numbers[rand::random_range(..numbers.len())];
         number
@@ -296,7 +296,7 @@ pub mod chord{
 
     /// Creates a random quality to be used in chord creation
     /// chord quality is limited to those for triads
-    pub fn rand_quality_triad() -> Quality {
+    fn rand_quality_triad() -> Quality {
         let qualities = [Quality::Major, Quality::Minor, Quality::Diminished, Quality::Augmented]; 
         let quality = qualities[rand::random_range(..qualities.len())];
         quality
@@ -304,7 +304,7 @@ pub mod chord{
 
     /// Creates a random quality to be used in chord creation
     /// chord quality is limited to those for seven chords
-    pub fn rand_quality_seventh() -> Quality {
+    fn rand_quality_seventh() -> Quality {
         let qualities = [Quality::Major, Quality::Minor, Quality::Diminished, Quality::Augmented, Quality::HalfDiminished,Quality::Dominant];
         let quality = qualities[rand::random_range(..qualities.len())];
         quality
