@@ -18,19 +18,6 @@ fn get_input(guess: &mut String){
 }
 
 fn main() {
-    // let notes: Vec<f32> = vec![261.63, 329.63, 392.00];
-    // play::play_notes(notes);
-    // let mut guess = String::new();
-    // println!("enter pitch");
-
-    // get_input(&mut guess);
-
-    // let result = notes::validate_input(&guess);
-    // if result {
-    //     println!("All notes are valid");
-    // } else{
-    //     println!("Invalid note detected");
-    // }
     
     let args: Vec<String> = env::args().collect();
 
@@ -78,23 +65,11 @@ fn main() {
         println!("Too many or too little arguments given. Expected 3 arguments total ");
         process::exit(1);
     }
-    
+
     let btree = notes::create_note_mappings();
-    println!("{:?}", btree);
-
-    // let freq = btree.get("A#");
-    // match freq {
-    //     Some(freq) => println!("freq for A# is {}", freq),
-    //     None => println!("Key not found"),
-    // }
-
+    //println!("{:?}", btree);
 
     loop{
-        // let mut root = String::new();
-        // let mut guess = String::new();
-        // let mut chord = String::new();
-        // let mut choice = String::new();
-        // let mut res = String::new();
         
         if args.len() == 1 {
             println!("Welcome to the Ear-training tool.");
@@ -119,17 +94,13 @@ fn main() {
             let note2_string = notes::get_note_letter(note2);
 
             let root_hz = notes::get_hz(&root_string, &btree);
-            //play::play_note(root_hz);
-
             let note2_hz = notes::get_hz(&note2_string, &btree);
-            //play::play_note(note2_hz);
 
             if root_hz > 0.0 && note2_hz > 0.0 {
                 let notes: Vec<f32> = vec![root_hz, note2_hz];
                 play::play_notes(notes);
 
                 println!("What interval did you hear? Hit Return/Enter key to see the answer");
-
                 get_input(&mut guess);
 
                 let answer =  format!("{}{}",interval.quality, interval.number);
@@ -141,7 +112,6 @@ fn main() {
         }
         else if choice.trim() == "2" {
             //Guess 2nd note from random interval applied
-
             if args.len() == 1 {
                 println!("Enter the note you want as the root. Ex. A, D#, Bb..etc");
                 get_input(&mut root);
@@ -152,31 +122,25 @@ fn main() {
                 let root: &str = &root.trim();
                 if let Some(note1) = notes::create_note(root){
                     let (note2, interval) = intervals::create_note_from_rand_interval(note1.clone());
+
                     let note2_string = notes::get_note_letter(note2);
-        
                     let root_string = notes::get_note_letter(note1.clone());
                     let root_hz = notes::get_hz(&root_string, &btree);
-                    // play::play_note(root_hz);
-        
                     let note2_hz = notes::get_hz(&note2_string.trim(), &btree);
-                    // play::play_note(note2_hz);
         
                     if root_hz > 0.0 && note2_hz > 0.0{
                         let notes: Vec<f32> = vec![root_hz, note2_hz];
                         play::play_notes(notes);
+
+                        println!("What was the 2nd note? Hit Return/Enter key to see the answer!");
+                        get_input(&mut guess);
+    
+                        let answer =  format!("{}{}",interval.quality, interval.number);
+                        println!("Interval was {}, 2nd note was {}", answer, note2_string);
                     }
                     else{
                         println!{"Sorry, failed to get hz for one or more of the notes"};
                     }
-
-                    println!("What was the 2nd note? Hit Return/Enter key to see the answer!");
-                    io::stdin()
-                    .read_line(&mut guess)
-                    .expect("Failed to read line");
-
-                    let answer =  format!("{}{}",interval.quality, interval.number);
-                    println!("Interval was {}, 2nd note was {}", answer, note2_string);
-                    
                 } else{
                     println!("Failed to create note");
                 }
@@ -208,35 +172,28 @@ fn main() {
         // }
         else if choice.trim() == "4"{
             //Guess the inversion
-
             if args.len() == 1{
                 println!("Enter the notes you want to use in the chord. Ex. 'C E G'");
-                // io::stdin()
-                // .read_line(&mut chord)
-                // .expect("Failed to read line");
                 get_input(&mut chord);
             }
             //TODO: create_chord will panic if it can't create chord
             if notes::validate_input(&chord) == 0{ // check that user enteres max of 4 notes
-
                 println!("invalid note detected");
             } else {
                 let chord_type = chord::create_chord(&chord);
                 let chord_inverted = chord::rand_inversion(chord_type);
-                println!("chord after inversion is {:?}", chord_inverted);
+                //println!("chord after inversion is {:?}", chord_inverted);
                 let notes_in_chord = chord_inverted.notes();
 
                 let mut notes: Vec<f32> = Vec::new();
 
                 for note in notes_in_chord.into_iter() {
                     let letter = notes::get_note_letter(note);
-                    println!("note letter is {}", letter);
-
+                    //println!("note letter is {}", letter);
                     let note_hz = notes::get_hz(&letter, &btree);
 
                     if note_hz > 0.0 {
                         notes.push(note_hz);
-                        // play::play_note(note_hz);
                     }
                 }
                 play::play_notes(notes);
@@ -264,11 +221,9 @@ fn main() {
                 let letter = notes::get_note_letter(note);
                 println!("note letter is {}", letter);
                 let note_hz = notes::get_hz(&letter, &btree);
-                //TODO: check that hzs are > 0
 
                 if note_hz > 0.0 {
                     notes.push(note_hz);
-                // play::play_note(note_hz);
                 }
             }
             play::play_notes(notes);
