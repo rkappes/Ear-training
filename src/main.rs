@@ -5,11 +5,12 @@ use ear_training::play;
 use ear_training::chord;
 use rustmt::note::Notes;
 use std::{io,env, process};
-// use lazy_static::lazy_static;
-// extern crate rodio;
-// use std::error::Error;
 
 
+/// Utility function to get user input
+/// and store answer in passed in variable
+/// ### Parameters
+/// - a mutable string
 fn get_input(guess: &mut String){
     io::stdin()
     .read_line( guess)
@@ -65,10 +66,19 @@ fn main() {
             process::exit(1);
            }
         }
+        else{
+            println!("Command arguments not valid, exiting");
+            process::exit(1);
+        }
+
+        // When running with command line args, do not want to run loop
         res= String::from("n");
-
     }
-
+    else{
+        println!("Too many or too little arguments given. Expected 3 arguments total ");
+        process::exit(1);
+    }
+    
     let btree = notes::create_note_mappings();
     println!("{:?}", btree);
 
