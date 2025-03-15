@@ -393,6 +393,7 @@ pub mod chord{
     }
 
     /// Code duplicated from the Chord::from_interval function in rust-music-theory crate
+    /// https://github.com/ozankasikci/rust-music-theory/blob/master/src/chord/chord.rs
     /// However that function panics if chord is not valid
     /// This function uses the Default chord instead to avoid panicing
     /// ### Parameters
@@ -435,7 +436,8 @@ pub mod chord{
 
     /// Creates a chord from a string - Ex "C, E, G"
     /// Code is duplicated from Chord::from_string in rust-music-theory crate
-    /// however that function calls the Chord::from_interval function which panics if chord is not valid
+    /// https://github.com/ozankasikci/rust-music-theory/blob/master/src/chord/chord.rs
+    /// However that function calls the Chord::from_interval function which panics if chord is not valid
     /// This calls the create_from_intervals function to create a chord without panicing
     /// ### Parameters
     /// - string representation of the chord notes. Ex "C E G"
