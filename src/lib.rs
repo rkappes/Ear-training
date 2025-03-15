@@ -8,33 +8,33 @@ pub mod notes{
     // This code is taken from rust-music-theaory crate from Pitch.rs. 
     // I wanted to use it to validate if the user enters a valid note(s)
     // however as this code was not made public from the pitch module and 
-    // wanted to use it in a slightly different way, I duplicated it here
+    // I wanted to use it in a slightly different way, I duplicated it here
     lazy_static! {
         static ref REGEX_PITCH: Regex = Regex::new("^[ABCDEFGabcdefg][b♭♯#s𝄪x]*").unwrap();
     }
 
-    /// Given a string, which will be user input
+    /// Given a string, which will be user input,
     /// validate if the string contains valid notes
     /// ### Parameters
     /// - an input str
     /// ### Returns
-    /// - bool
-    pub fn validate_input(input: &str)->bool{
+    /// - the number of valid notes
+    pub fn validate_input(input: &str)->u8{
+        //TODO: trime leading and trailing whitespace and replace ',' with ''
         let notes = input.split_whitespace();
         let mut count = 0;
         for note in notes {
-            count += 1;
             match REGEX_PITCH.find(&note){
-                Some(_m) => continue,
-                None => return false
+                Some(_m) => count += 1,
+                None => return 0
             }
         }
 
         if count > 4{
             println!("Too many notes, maximum of 4 notes allowed");
-            return false
+            return 0
         }
-        true
+        count
     }
     /// Creates a BTree that will be used to find the corresponding Hz for a given pitch
     /// Notes included are ony for octaves 4 and 5
@@ -382,7 +382,8 @@ pub mod chord{
     } 
 
     /// Applies a random inversion to a given chord
-    /// Inversion are: 0 (root), 1 (first inversion), 2 (second inversion), 3 (third inversion - seven chords only)
+    /// Inversion are: 0 (root), 1 (first inversion), 2 (second inversion), 
+    /// 3 (third inversion - seven chords only)
     /// ### Returns
     /// - a chord type
     pub fn rand_inversion(chord: Chord) -> Chord {
