@@ -13,7 +13,7 @@ pub mod notes{
         static ref REGEX_PITCH: Regex = Regex::new("^[ABCDEFGabcdefg][b♭♯#s𝄪x]*").unwrap();
     }
 
-    /// Given a string, which will be user input,
+    /// Given a string (which will be user input)
     /// validate if the string contains valid notes
     /// ### Parameters
     /// - an input str
@@ -21,7 +21,8 @@ pub mod notes{
     /// - the number of valid notes
     pub fn validate_input(input: &str)->u8{
         //TODO: trime leading and trailing whitespace and replace ',' with ''
-        let notes = input.split_whitespace();
+        let input = input.replace(',', "");
+        let notes = input.trim().split_whitespace();
         let mut count = 0;
         for note in notes {
             match REGEX_PITCH.find(&note){
