@@ -4,7 +4,7 @@ use ear_training::notes;
 use ear_training::play;
 use ear_training::chord;
 use rustmt::note::Notes;
-use std::io;
+use std::{io,env, process};
 // use lazy_static::lazy_static;
 // extern crate rodio;
 // use std::error::Error;
@@ -31,6 +31,43 @@ fn main() {
     //     println!("Invalid note detected");
     // }
     
+    let args: Vec<String> = env::args().collect();
+
+    let mut root = String::new();
+    let mut guess = String::new();
+    let mut chord = String::new();
+    let mut choice = String::new();
+    let mut res = String::new();
+
+    if args.len() == 3 {
+        let choice_type = &args[1];
+        let option = &args[2];
+
+        if choice_type.to_lowercase() == "random" && option.to_lowercase() == "interval" {
+            choice = String::from("1");
+        }
+        else if choice_type.to_lowercase() == "random" && option.to_lowercase() == "chord" {
+            choice = String::from("5");
+        }
+        else if choice_type.to_lowercase() == "given" {
+           let note_count = notes::validate_input(option);
+
+           if note_count == 1{
+            choice = String::from("2");
+            root = String::from(option);
+           }
+           else if note_count == 3 || note_count == 4{
+            choice = String::from("4");
+            chord = String::from(option);
+           }
+           else{
+            println!("Either too many or too little notes given. Number of notes can be 1 (single note), 3 (triad) or 4 (seven chord)");
+            process::exit(1);
+           }
+        }
+        res= String::from("n");
+
+    }
 
     let btree = notes::create_note_mappings();
     println!("{:?}", btree);
@@ -43,25 +80,26 @@ fn main() {
 
 
     loop{
-        let mut root = String::new();
-        let mut guess = String::new();
-        let mut chord = String::new();
-        let mut choice = String::new();
-        let mut res = String::new();
+        // let mut root = String::new();
+        // let mut guess = String::new();
+        // let mut chord = String::new();
+        // let mut choice = String::new();
+        // let mut res = String::new();
         
+        if args.len() == 1 {
+            println!("Welcome to the Ear-training tool.");
+            println!("Select an option below by entering the corresponding number");
+            println!("1. Random interval - Guess the interval");
+            println!("2. Random Interval from given note - Guess 2nd note");
+            println!("3. Given interval from random note - ");
+            println!("4. Randomly invert a given chord - Guess the inversion");
+            println!("5. Random chord - guess the chord type");
 
-        println!("Welcome to the Ear-training tool.");
-        println!("Select an option below by entering the corresponding number");
-        println!("1. Random interval - Guess the interval");
-        println!("2. Random Interval from given note - Guess 2nd note");
-        println!("3. Given interval from random note - ");
-        println!("4. Randomly invert a given chord - Guess the inversion");
-        println!("5. Random chord - guess the chord type");
+            get_input(&mut choice);
+            println!("choice is {}", choice);
+            res.clear();
+        }
 
-
-        get_input(&mut choice);
-
-        println!("choice is {}", choice);
         if choice.trim() == "1"{
             //Guess a random interval
             let root = notes::rand_note();
@@ -93,11 +131,12 @@ fn main() {
         }
         else if choice.trim() == "2" {
             //Guess 2nd note from random interval applied
-            println!("Enter the note you want as the root. Ex. A, D#, Bb..etc");
 
-            get_input(&mut root);
-
-            if !notes::validate_input(&root){
+            if args.len() == 1 {
+                println!("Enter the note you want as the root. Ex. A, D#, Bb..etc");
+                get_input(&mut root);
+            }
+            if notes::validate_input(&root) == 0{
                 println!("invalid note detected");
             } else {
                 let root: &str = &root.trim();
@@ -159,16 +198,19 @@ fn main() {
         // }
         else if choice.trim() == "4"{
             //Guess the inversion
-            println!("Enter the notes you want to use in the chord. Ex. 'C E G'");
-            // io::stdin()
-            // .read_line(&mut chord)
-            // .expect("Failed to read line");
-            get_input(&mut chord);
+
+            if args.len() == 1{
+                println!("Enter the notes you want to use in the chord. Ex. 'C E G'");
+                // io::stdin()
+                // .read_line(&mut chord)
+                // .expect("Failed to read line");
+                get_input(&mut chord);
+            }
             //TODO: create_chord will panic if it can't create chord
-            if !notes::validate_input(&chord){
+            if notes::validate_input(&chord) == 0{ // check that user enteres max of 4 notes
+
                 println!("invalid note detected");
             } else {
-                // check that user enteres max of 4 notes
                 let chord_type = chord::create_chord(&chord);
                 let chord_inverted = chord::rand_inversion(chord_type);
                 println!("chord after inversion is {:?}", chord_inverted);
@@ -232,12 +274,19 @@ fn main() {
             println!("Choice not valid")
         }
 
-        println!("Again? y/n");
+        if args.len() == 1{
+            println!("Again? y/n");
 
-        get_input(&mut res);
-        println!("res is {}", res);
+            get_input(&mut res);
+            println!("res is {}", res);
+        }
         if res.trim() == "n"{
             break;
         }
+
+        root.clear();
+        guess.clear();
+        chord.clear();
+        choice.clear();
     }
 }
