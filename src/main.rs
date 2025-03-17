@@ -49,7 +49,7 @@ fn main() {
             chord = String::from(option);
            }
            else{
-            println!("Either too many or too little notes given. Number of notes can be 1 (single note), 3 (triad) or 4 (seven chord)");
+            println!("Invalid note detected, or too many or too little notes given. Number of notes can be 1 (single note), 3 (triad) or 4 (seven chord)");
             process::exit(1);
            }
         }
@@ -61,8 +61,8 @@ fn main() {
         // When running with command line args, do not want to run loop
         res= String::from("n");
     }
-    else{
-        println!("Too many or too little arguments given. Expected 3 arguments total ");
+    else if args.len() != 1{
+        println!("Number of args passed not valid. Expected 2 or 0 arguments");
         process::exit(1);
     }
 
