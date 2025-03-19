@@ -136,3 +136,52 @@ pub fn create_chord(string: & str) -> Chord{
 
     create_from_intervals(notes[0], &intervals)
 }
+
+#[cfg(test)]
+mod tests {
+
+    use super::*;
+    use rust_music_theory::note::NoteLetter;
+
+    fn mock_rand_number() -> Number{
+        Number::Triad
+    }
+
+    fn mock_rand_quality_triad() -> Quality{
+        Quality::Major
+    }
+
+    fn mock_rand_quality_seventh() -> Quality{
+        Quality::Minor
+    }
+
+    fn mock_create_rand_pitch() -> Pitch{
+        Pitch::new(NoteLetter::A, 0)
+    }
+    
+    fn mock_rand_chord() ->Chord{
+        let number = mock_rand_number();
+        let quality = if number == Number::Triad{
+            mock_rand_quality_triad()
+        }
+        else{
+            mock_rand_quality_seventh()
+        };
+        
+        let pitch = mock_create_rand_pitch();
+    
+        //println!("In rand_chord, pitch is {}, number is {} and quality is {}", pitch, number, quality);
+    
+        Chord::new(pitch, quality, number)
+    }
+
+    #[test]
+    fn test_rand_chord(){
+        let chord = mock_rand_chord();
+        let number = chord.number;
+        let quality = chord.quality;
+        assert_eq!(number, Number::Triad);
+        assert_eq!(quality, Quality::Major);
+    }
+
+}
