@@ -9,7 +9,7 @@ use regex::Regex;
 // however as this code was not made public from the pitch module and 
 // I wanted to use it in a slightly different way, I duplicated it here
 lazy_static! {
-    static ref REGEX_PITCH: Regex = Regex::new("^[ABCDEFGabcdefg][b♭♯#s𝄪x]*").unwrap();
+    static ref REGEX_PITCH: Regex = Regex::new("^[ABCDEFGabcdefg][b♭♯#s𝄪x]*$").unwrap();
 }
 
 /// Given a string (which will be user input)
@@ -199,4 +199,83 @@ pub fn get_note_letter(note: Note) -> String {
     result.push_str(&octave);
     //println!("note letter is {}", result);
     result
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_validate_input_invalid_input(){
+        assert_eq!(0, validate_input("p3"));
+        assert_eq!(0, validate_input("A1"));
+        assert_eq!(0, validate_input("5"));
+        assert_eq!(0, validate_input("c ex s#"));
+        assert_eq!(0, validate_input("h4"));
+        assert_eq!(0, validate_input("m2 p4"));
+        assert_eq!(0, validate_input("d7b"));
+    }
+
+    #[test]
+    fn test_validate_input_valid_input(){
+        assert_eq!(1, validate_input("c"));
+        assert_eq!(1, validate_input("bb"));
+        assert_eq!(1, validate_input("f#"));
+        assert_eq!(1, validate_input("Ax"));
+        assert_eq!(1, validate_input("Gbb"));
+        assert_eq!(1, validate_input("Db"));
+        assert_eq!(1, validate_input("E"));
+    }
+
+    #[test]
+    fn test_get_hz(){
+        let mappings = create_note_mappings();
+
+        assert_eq!(261.63, get_hz("C4", &mappings));
+        assert_eq!(392.00, get_hz("Fx4", &mappings));
+        assert_eq!(392.00, get_hz("Fx4", &mappings));
+        assert_eq!(698.46, get_hz("E#5", &mappings));
+        assert_eq!(415.30, get_hz("Ab4", &mappings));
+
+        assert_eq!(0.0, get_hz("H4", &mappings));
+        assert_eq!(0.0, get_hz("Bbb4", &mappings));
+        assert_eq!(0.0, get_hz("Cxx4", &mappings));
+    }
+
+    #[test]
+    fn test_create_rand_pitch(){
+        for _ in 0..1000 { 
+            let pitch = create_rand_pitch();
+            let pitch_value = pitch.into_u8();  
+            assert!(pitch_value < 12, "Pitch out of range: {}", pitch_value);
+        }
+    }
+
+    #[test]
+    fn test_create_note(){
+        if let Some(note) = create_note("D"){
+            let note_pitch = note.pitch.into_u8();
+            assert_eq!(2, note_pitch);
+        }
+
+        let bad_note = create_note("x4");
+        assert!(bad_note.is_none());
+    }
+
+    #[test]
+    fn test_rand_note(){
+        let note = rand_note();
+        let pitch_value = note.pitch.into_u8(); 
+        assert!(pitch_value < 12, "Pitch out of range: {}", pitch_value);
+        assert_eq!(note.octave, 4, "Expected octave to be 4");
+    }
+
+    #[test]
+    fn test_get_note_letter(){
+        let pitch = Pitch::new(NoteLetter::G,1);
+        let note = Note::new(pitch, 4);
+        let note_letter = get_note_letter(note);
+
+        assert_eq!("G#4", note_letter);
+    }
 }
