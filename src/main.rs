@@ -22,6 +22,7 @@ fn main() {
     let args: Vec<String> = env::args().collect();
 
     let mut root = String::new();
+    let mut interval = String::new();
     let mut guess = String::new();
     let mut chord = String::new();
     let mut choice = String::new();
@@ -38,20 +39,27 @@ fn main() {
             choice = String::from("5");
         }
         else if choice_type.to_lowercase() == "given" {
-           let note_count = notes::validate_input(option);
+        
+            if option.contains("unison") || option.contains("octave") || intervals::check_if_interval(option){
+                interval = String::from(option);
+                choice = String::from("3");
+            }
+            else{
+                let note_count = notes::validate_input(option);
 
-           if note_count == 1{
-            choice = String::from("2");
-            root = String::from(option);
-           }
-           else if note_count == 3 || note_count == 4{
-            choice = String::from("4");
-            chord = String::from(option);
-           }
-           else{
-            println!("Invalid note detected, or too many or too little notes given. Number of notes can be 1 (single note), 3 (triad) or 4 (seven chord)");
-            process::exit(1);
-           }
+                if note_count == 1{
+                    choice = String::from("2");
+                    root = String::from(option);
+                }
+                else if note_count == 3 || note_count == 4{
+                    choice = String::from("4");
+                    chord = String::from(option);
+                }
+                else{
+                    println!("Invalid note detected, or too many or too little notes given. Number of notes can be 1 (single note), 3 (triad) or 4 (seven chord)");
+                    process::exit(1);
+                }
+            }
         }
         else{
             println!("Command arguments not valid, exiting");
@@ -75,10 +83,10 @@ fn main() {
             println!("Welcome to the Ear-training tool.");
             println!("Select an option below by entering the corresponding number");
             println!("1. Random interval - Guess the interval");
-            println!("2. Random Interval from given note - Guess 2nd note");
-            println!("3. Given interval from random note - ");
+            println!("2. Random Interval from a given note - Guess 2nd note");
+            println!("3. Hear given interval from random note");
             println!("4. Randomly invert a given chord - Guess the inversion");
-            println!("5. Random chord - guess the chord type");
+            println!("5. Random chord - Guess the chord type");
 
             get_input(&mut choice);
             println!("choice is {}", choice);
@@ -147,29 +155,35 @@ fn main() {
 
             }
         }
-        // else if choice.trim() == "3"{
-        //     println!("Enter the interval you want to use. Ex. M3, P5, m6..etc");
-        //     io::stdin()
-        //     .read_line(&mut interval)
-        //     .expect("Failed to read line");
+        else if choice.trim() == "3"{
+            if args.len() == 1 {
+                println!("Enter the interval you want to use. Ex. M3, P5, m6, A4...etc");
+                get_input(&mut interval);
+            }
 
-        //     if let Some(root) = notes::rand_note(){
-        //         let root_string = notes::get_note_letter(root.clone());
+            if interval.contains("unison") || interval.contains("octave") || intervals::check_if_interval(&interval){
 
-        //         let interval_type = intervals::create_interval_string(&interval.trim());
-        //         let note2 = intervals::create_note_from_given_interval(root, interval_type, &mut String::from("Up"));
-    
-        //         let note2_string = notes::get_note_letter(note2);
-        //         let root_hz = notes::get_hz(&root_string, &btree);
-        //         // play::play_note(root_hz);
-    
-        //         let note2_hz = notes::get_hz(&note2_string, &btree);
-        //         // play::play_note(note2_hz);
-        //     }else{
-        //         println!("Failed to generate random note");
-        //     }   
+                let root = notes::rand_note();
+                let root_string = notes::get_note_letter(root.clone());
+
+                let interval_type = intervals::create_interval_string(&interval.trim());
+                let note2 = intervals::create_note_from_given_interval(root, interval_type, &mut String::from("Up"));
+
+                let note2_string = notes::get_note_letter(note2);
+                let root_hz = notes::get_hz(&root_string, &btree);
+                let note2_hz = notes::get_hz(&note2_string, &btree);
+
+                if root_hz > 0.0 && note2_hz > 0.0 {
+                    let notes: Vec<f32> = vec![root_hz, note2_hz];
+                    play::play_notes(notes);
+                    println!("Notes are {} and {}.", root_string, note2_string);
+                }
+                else{
+                    println!{"Sorry, failed to get hz for one or more of the notes"};
+                }
+            }
             
-        // }
+        }
         else if choice.trim() == "4"{
             //Guess the inversion
             if args.len() == 1{
@@ -250,6 +264,7 @@ fn main() {
         }
 
         root.clear();
+        interval.clear();
         guess.clear();
         chord.clear();
         choice.clear();
