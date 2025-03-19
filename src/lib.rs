@@ -118,7 +118,7 @@ pub mod notes{
         let mut note_hz: f32 = 0.0;
         match freq {
             Some(freq) => {
-                println!("freq for {} is {}", key, freq);
+                //println!("freq for {} is {}", key, freq);
                 note_hz = *freq as f32;
             }
             None => println!("Hz for note {} not found", key),
@@ -144,7 +144,7 @@ pub mod notes{
     /// ### Returns
     /// - An Option of type Note
     pub fn create_note(letter: &str) -> Option<Note> {
-        println!("In create_note, letter is {}", letter);
+        //println!("In create_note, letter is {}", letter);
         //TODO: check what happends if pitch created is double sharp or double flat
         if let Some(pitch) = Pitch::from_str(letter.trim()){ //NOTE: use impl FromStr instead?
         //println!("result from_str is {:?}", pitch);
@@ -198,7 +198,7 @@ pub mod notes{
             result.push(char_accidental);  
         } 
         result.push_str(&octave);
-        println!("note letter is {}", result);
+        //println!("note letter is {}", result);
         result
     }
 }
@@ -206,7 +206,8 @@ pub mod intervals {
     extern crate rust_music_theory as rustmt;
     use rustmt::note::Note;
     use rustmt::interval::{Interval, IntervalError}; //, Number, Quality};
-
+    use lazy_static::lazy_static;
+    use regex::Regex;
 /* 
     /// Returns a random Quality type, using rust-music-theory Quality enum.
     fn rand_quality() -> Quality {
@@ -222,6 +223,32 @@ pub mod intervals {
         interval
     }
 */
+
+    lazy_static! {
+        static ref REGEX_INTERVAL: Regex = Regex::new("^[MmPpAaDd][234567]").unwrap();
+    }
+
+    pub fn check_if_interval(input: &str)->bool{
+        //TODO: trime leading and trailing whitespace and replace ',' with ''
+        let input = input.replace(',', "");
+        let notes = input.trim().split_whitespace();
+        let mut count = 0;
+        for note in notes {
+            match REGEX_INTERVAL.find(&note){
+                Some(_m) => count += 1,
+                None => {
+                    println!("Interval {}, not valid", note);
+                    return false
+                }
+            }
+        }
+
+        if count > 1{
+            println!("Please only enter a single interval");
+            return false;
+        }
+        true
+    }
     /// Returns a random number (0-12) to be used as the number of semitones
     /// ### Returns
     /// - number as u8
@@ -240,7 +267,7 @@ pub mod intervals {
             Ok(interval) => interval,
             Err(_error) => Interval::default(),
         };
-        println!("Interval is {:?}", interval);
+        //println!("Interval is {:?}", interval);
 
         interval
     }
@@ -253,7 +280,7 @@ pub mod intervals {
     /// ### Returns
     /// - Interval type 
     pub fn create_interval_string(interval: &str) -> Interval{
-        println!("In create_Interval_string, interval is {}", interval);
+        //println!("In create_Interval_string, interval is {}", interval);
         let semitones: u8;
         match interval.trim() {
             "unison" => semitones = 0,
@@ -261,15 +288,18 @@ pub mod intervals {
             "M2" => semitones =2,
             "m3" => semitones =3,
             "M3" => semitones =4,
-            "P4" => semitones =5,
-            "D5" => semitones =6,
-            "P5" => semitones =7,
-            "m6" => semitones =8,
+            "P4" | "p4" => semitones =5,
+            "A4" | "a4" | "d5" | "D5" => semitones = 6,
+            "P5" | "p5" => semitones = 7,
+            "m6" | "A5" | "a5" => semitones =8,
             "M6" => semitones =9,
             "m7" => semitones =10,
             "M7" => semitones =11,
             "octave" => semitones =12,
-            _=> semitones = 0 //TODO: Return an error or do something else?
+            _=> {
+                println!("Unable to create interval from {}, defaulting to unison", interval);
+                semitones = 0 //TODO: Return an error or do something else?
+            }
         }
 
         create_interval_semitones(semitones)
@@ -297,7 +327,7 @@ pub mod intervals {
             Err(_error) => Interval::default(),
         };
 
-        println!("Random Interval is {:?}", interval);
+        //println!("Random Interval is {:?}", interval);
         let new_note = interval.second_note_from(root);
         (new_note, interval)
     }
@@ -373,7 +403,7 @@ pub mod chord{
         
         let pitch = crate::notes::create_rand_pitch();
 
-        println!("In rand_chord, pitch is {}, number is {} and quality is {}", pitch, number, quality);
+        //println!("In rand_chord, pitch is {}, number is {} and quality is {}", pitch, number, quality);
 
         Chord::new(pitch, quality, number)
     } 
@@ -388,7 +418,7 @@ pub mod chord{
         let quality = chord.quality;
         let number = chord.number;
         let inversion = rand::random_range(1..4);
-        println!("In rand_inversion, inversion is {}", inversion);
+        //println!("In rand_inversion, inversion is {}", inversion);
         Chord::with_inversion(root, quality, number,inversion)
     }
 
