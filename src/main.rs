@@ -2,7 +2,7 @@ extern crate rust_music_theory as rustmt;
 use ear_training::intervals; 
 use ear_training::notes;
 use ear_training::play;
-use ear_training::chord;
+use ear_training::chords;
 use rustmt::note::Notes;
 use std::{io,env, process};
 
@@ -194,8 +194,8 @@ fn main() {
             if notes::validate_input(&chord) == 0{ // check that user enteres max of 4 notes
                 println!("invalid note detected");
             } else {
-                let chord_type = chord::create_chord(&chord);
-                let chord_inverted = chord::rand_inversion(chord_type);
+                let chord_type = chords::create_chord(&chord);
+                let chord_inverted = chords::rand_inversion(chord_type);
                 //println!("chord after inversion is {:?}", chord_inverted);
                 let notes_in_chord = chord_inverted.notes();
 
@@ -227,7 +227,7 @@ fn main() {
         }
         else if choice.trim() == "5"{
             //Guess the chord type
-            let chord = chord::rand_chord();
+            let chord = chords::rand_chord();
             let notes_in_chord: Vec<rustmt::note::Note> = chord.notes();
             let mut notes: Vec<f32> = Vec::new();
 
