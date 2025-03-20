@@ -1,12 +1,12 @@
 extern crate rust_music_theory as rustmt;
-use rustmt::note::{Note,Pitch, NoteLetter};
-use std::collections::BTreeMap;
 use lazy_static::lazy_static;
 use regex::Regex;
+use rustmt::note::{Note, NoteLetter, Pitch};
+use std::collections::BTreeMap;
 
-// This code is taken from rust-music-theaory crate from Pitch.rs. 
+// This code is taken from rust-music-theaory crate from Pitch.rs.
 // I wanted to use it to validate if the user enters a valid note(s)
-// however as this code was not made public from the pitch module and 
+// however as this code was not made public from the pitch module and
 // I wanted to use it in a slightly different way, I duplicated it here
 lazy_static! {
     static ref REGEX_PITCH: Regex = Regex::new("^[ABCDEFGabcdefg][b♭♯#s𝄪x]*$").unwrap();
@@ -18,28 +18,28 @@ lazy_static! {
 /// - an input str
 /// ### Returns
 /// - the number of valid notes
-pub fn validate_input(input: &str)->u8{
+pub fn validate_input(input: &str) -> u8 {
     //TODO: trime leading and trailing whitespace and replace ',' with ''
     let input = input.replace(',', "");
     let notes = input.split_whitespace();
     let mut count = 0;
     for note in notes {
-        match REGEX_PITCH.find(note){
+        match REGEX_PITCH.find(note) {
             Some(_m) => count += 1,
-            None => return 0
+            None => return 0,
         }
     }
 
-    if count > 4{
+    if count > 4 {
         println!("Too many notes, maximum of 4 notes allowed");
-        return 0
+        return 0;
     }
     count
 }
 /// Creates a BTree that will be used to find the corresponding Hz for a given pitch
 /// Notes included are ony for octaves 4 and 5
 /// Enharmonic notes are included
-pub fn create_note_mappings() -> BTreeMap<String,f64>{
+pub fn create_note_mappings() -> BTreeMap<String, f64> {
     let mut note_hz: BTreeMap<String, f64> = BTreeMap::new();
 
     let notes = [
@@ -96,10 +96,10 @@ pub fn create_note_mappings() -> BTreeMap<String,f64>{
         ("A#5", 932.33),
         ("Bb5", 932.33),
         ("Ax5", 987.77),
-        ("B5", 987.77)
+        ("B5", 987.77),
     ];
 
-    for(note, freq) in &notes {
+    for (note, freq) in &notes {
         note_hz.insert(note.to_string(), *freq);
     }
     note_hz
@@ -111,8 +111,8 @@ pub fn create_note_mappings() -> BTreeMap<String,f64>{
 ///  - key: the pitch name
 /// - btree: the created BTree of notes/pitches
 /// ### Returns
-/// - a f32 as the hz for the pitch. 
-pub fn get_hz(key: &str, btree: &BTreeMap<String,f64>) -> f32{
+/// - a f32 as the hz for the pitch.
+pub fn get_hz(key: &str, btree: &BTreeMap<String, f64>) -> f32 {
     let freq = btree.get(key);
     let mut note_hz: f32 = 0.0;
     match freq {
@@ -128,7 +128,7 @@ pub fn get_hz(key: &str, btree: &BTreeMap<String,f64>) -> f32{
 /// Creates a random pitch by using a random number of semitones (0-11)
 /// ### Returns
 /// - A Pitch type
-pub fn create_rand_pitch() -> Pitch{
+pub fn create_rand_pitch() -> Pitch {
     let integer = rand::random_range(0..12);
     Pitch::from_u8(integer)
 }
@@ -152,16 +152,16 @@ pub fn create_note(letter: &str) -> Option<Note> {
 /// - A Note
 pub fn rand_note() -> Note {
     let pitch = create_rand_pitch();
-    Note::new(pitch,4)
+    Note::new(pitch, 4)
 }
 
 /// Creates the string representation (aka name) of a Note
 /// # Parameters
 /// - a note of type Note
 /// # Returns
-/// - a string representation of that note. 
+/// - a string representation of that note.
 pub fn get_note_letter(note: Note) -> String {
-    let pitch = note.pitch; 
+    let pitch = note.pitch;
     let octave = note.octave.to_string();
     let letter = pitch.letter;
     let accidental = pitch.accidental;
@@ -179,14 +179,14 @@ pub fn get_note_letter(note: Note) -> String {
         1 => '#',
         2 => 'x',
         -1 => 'b',
-        _=> '\0'
+        _ => '\0',
     };
 
-    let mut result = String::new(); 
-    result.push(char_letter);  
-    if char_accidental != '\0'{           
-        result.push(char_accidental);  
-    } 
+    let mut result = String::new();
+    result.push(char_letter);
+    if char_accidental != '\0' {
+        result.push(char_accidental);
+    }
     result.push_str(&octave);
     //println!("note letter is {}", result);
     result
@@ -197,7 +197,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_validate_input_invalid_input(){
+    fn test_validate_input_invalid_input() {
         assert_eq!(0, validate_input("p3"));
         assert_eq!(0, validate_input("A1"));
         assert_eq!(0, validate_input("5"));
@@ -208,7 +208,7 @@ mod tests {
     }
 
     #[test]
-    fn test_validate_input_valid_input(){
+    fn test_validate_input_valid_input() {
         assert_eq!(1, validate_input("c"));
         assert_eq!(1, validate_input("bb"));
         assert_eq!(1, validate_input("f#"));
@@ -219,7 +219,7 @@ mod tests {
     }
 
     #[test]
-    fn test_get_hz(){
+    fn test_get_hz() {
         let mappings = create_note_mappings();
 
         assert_eq!(261.63, get_hz("C4", &mappings));
@@ -234,17 +234,17 @@ mod tests {
     }
 
     #[test]
-    fn test_create_rand_pitch(){
-        for _ in 0..1000 { 
+    fn test_create_rand_pitch() {
+        for _ in 0..1000 {
             let pitch = create_rand_pitch();
-            let pitch_value = pitch.into_u8();  
+            let pitch_value = pitch.into_u8();
             assert!(pitch_value < 12, "Pitch out of range: {}", pitch_value);
         }
     }
 
     #[test]
-    fn test_create_note(){
-        if let Some(note) = create_note("D"){
+    fn test_create_note() {
+        if let Some(note) = create_note("D") {
             let note_pitch = note.pitch.into_u8();
             assert_eq!(2, note_pitch);
         }
@@ -254,16 +254,16 @@ mod tests {
     }
 
     #[test]
-    fn test_rand_note(){
+    fn test_rand_note() {
         let note = rand_note();
-        let pitch_value = note.pitch.into_u8(); 
+        let pitch_value = note.pitch.into_u8();
         assert!(pitch_value < 12, "Pitch out of range: {}", pitch_value);
         assert_eq!(note.octave, 4, "Expected octave to be 4");
     }
 
     #[test]
-    fn test_get_note_letter(){
-        let pitch = Pitch::new(NoteLetter::G,1);
+    fn test_get_note_letter() {
+        let pitch = Pitch::new(NoteLetter::G, 1);
         let note = Note::new(pitch, 4);
         let note_letter = get_note_letter(note);
 

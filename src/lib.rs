@@ -1,4 +1,4 @@
-pub mod notes;
-pub mod intervals;
 pub mod chords;
+pub mod intervals;
+pub mod notes;
 pub mod play;

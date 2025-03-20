@@ -9,21 +9,20 @@ use std::time::Duration;
 /// Changes made to take an vec of note frequencies to play
 /// ### Parameters
 /// - A vec of f32 types which should be note frequencies
-pub fn play_notes(notes: Vec<f32>){
+pub fn play_notes(notes: Vec<f32>) {
     // Construct a dynamic controller and mixer, stream_handle, and sink.
     let (controller, mixer) = dynamic_mixer::mixer::<f32>(2, 44_100);
     let (_stream, stream_handle) = OutputStream::try_default().unwrap();
     let sink = Sink::try_new(&stream_handle).unwrap();
 
-    for i in notes{
+    for i in notes {
         let new_source = SineWave::new(i)
-        .take_duration(Duration::from_secs_f32(1.))
-        .amplify(0.20);
-        
+            .take_duration(Duration::from_secs_f32(1.))
+            .amplify(0.20);
+
         match stream_handle.play_raw(new_source.clone()) {
-            Ok(_) => {
-            }
-            Err(e) =>{
+            Ok(_) => {}
+            Err(e) => {
                 println!("Error playing note.{} ", e)
             }
         }
@@ -41,8 +40,8 @@ pub fn play_notes(notes: Vec<f32>){
 }
 
 // Function not used, but left here as it was used as reference for play_notes function above
-// Source: https://github.com/RustAudio/rodio/blob/master/examples/signal_generator.rs 
-/* 
+// Source: https://github.com/RustAudio/rodio/blob/master/examples/signal_generator.rs
+/*
 fn play_note(freq: f32) -> Result<(), Box<dyn Error>> {
     let (_stream, stream_handle) = rodio::OutputStream::try_default()?; //Builder::open_default_stream()?;
 
@@ -62,5 +61,3 @@ fn play_note(freq: f32) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 */
-
-    

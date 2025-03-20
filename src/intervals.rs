@@ -1,28 +1,28 @@
 extern crate rust_music_theory as rustmt;
-use rustmt::note::Note;
-use rustmt::interval::{Interval, IntervalError};
 use lazy_static::lazy_static;
 use regex::Regex;
+use rustmt::interval::{Interval, IntervalError};
+use rustmt::note::Note;
 
 lazy_static! {
     static ref REGEX_INTERVAL: Regex = Regex::new("^[Mm][2367]$|^[PpAaDd][45]$").unwrap();
 }
 
-pub fn check_if_interval(input: &str)->bool{
+pub fn check_if_interval(input: &str) -> bool {
     let input = input.replace(',', "");
     let notes = input.split_whitespace();
     let mut count = 0;
     for note in notes {
-        match REGEX_INTERVAL.find(note){
+        match REGEX_INTERVAL.find(note) {
             Some(_m) => count += 1,
             None => {
                 println!("Interval {}, not valid", note);
-                return false
+                return false;
             }
         }
     }
 
-    if count > 1{
+    if count > 1 {
         println!("Please only enter a single interval");
         return false;
     }
@@ -39,21 +39,20 @@ fn rand_semitone() -> u8 {
 /// If it fails to create an interval from the given semitones, defaults to unison
 /// ### Returns
 /// - An Interval type
-fn create_interval_semitones(semitones: u8) -> Interval{
-
+fn create_interval_semitones(semitones: u8) -> Interval {
     let interval_result = Interval::from_semitone(semitones);
     interval_result.unwrap_or_default()
     //println!("Interval is {:?}", interval);
 }
 
 /// Creates an interval given a string value: m3, M6, P5..etc
-/// Matches the interval to the number of semitones and calls 
+/// Matches the interval to the number of semitones and calls
 /// create_interval_semitones
 /// ### Parameters:
 /// - a &str of the desired interval
 /// ### Returns
-/// - Interval type 
-pub fn create_interval_string(interval: &str) -> Interval{
+/// - Interval type
+pub fn create_interval_string(interval: &str) -> Interval {
     //println!("In create_Interval_string, interval is {}", interval);
     let semitones: u8 = match interval.trim() {
         "unison" => 0,
@@ -69,8 +68,11 @@ pub fn create_interval_string(interval: &str) -> Interval{
         "m7" => 10,
         "M7" => 11,
         "octave" => 12,
-        _=> {
-            println!("Unable to create interval from {}, defaulting to unison", interval);
+        _ => {
+            println!(
+                "Unable to create interval from {}, defaulting to unison",
+                interval
+            );
             0
         }
     };
@@ -89,7 +91,7 @@ fn create_rand_interval() -> Result<Interval, IntervalError> {
 
 ///Creates a note that is a random interval above a given note
 /// ### Parameters:
-/// - A note value (the root) as a Note type 
+/// - A note value (the root) as a Note type
 /// ### Returns:
 /// - A tuple of a Note type (the 2nd note) and the random interval used
 pub fn create_note_from_rand_interval(root: Note) -> (Note, Interval) {
@@ -103,30 +105,32 @@ pub fn create_note_from_rand_interval(root: Note) -> (Note, Interval) {
 
 /// Creates a note that is a given interval above or below a given note
 /// ### Parameters:
-/// - A note value (the root), of type Note 
+/// - A note value (the root), of type Note
 /// - an Interval, of type Interval
 /// - A direction (up or down)
 /// ### Returns:
 /// - A Note type (the 2nd note)
-pub fn create_note_from_given_interval(root: Note, interval: Interval, direction: &mut String) -> Note {
+pub fn create_note_from_given_interval(
+    root: Note,
+    interval: Interval,
+    direction: &mut String,
+) -> Note {
     direction.make_ascii_lowercase();
     if direction == "down" {
         interval.second_note_down_from(root)
-    }
-    else{
+    } else {
         interval.second_note_from(root)
     }
 }
 
-
 #[cfg(test)]
 mod tests {
-    use rust_music_theory::note::{Pitch,NoteLetter};
+    use rust_music_theory::note::{NoteLetter, Pitch};
 
     use super::*;
 
     #[test]
-    fn test_check_if_interval_invalid_input(){
+    fn test_check_if_interval_invalid_input() {
         assert_eq!(false, check_if_interval("p3"));
         assert_eq!(false, check_if_interval("M4"));
         assert_eq!(false, check_if_interval("5"));
@@ -137,7 +141,7 @@ mod tests {
     }
 
     #[test]
-    fn test_check_if_interval_valid_input(){
+    fn test_check_if_interval_valid_input() {
         assert_eq!(true, check_if_interval("m2"));
         assert_eq!(true, check_if_interval("P4"));
         assert_eq!(true, check_if_interval("D5"));
@@ -148,15 +152,15 @@ mod tests {
     }
 
     #[test]
-    fn test_rand_semitone(){
-        for _ in 0..1000{
+    fn test_rand_semitone() {
+        for _ in 0..1000 {
             let semitone = rand_semitone();
             assert!(semitone < 12, "Semitone {} out of range", semitone);
         }
     }
 
     #[test]
-    fn test_create_interval_semitones(){
+    fn test_create_interval_semitones() {
         let interval = create_interval_semitones(7);
         assert_eq!(7, interval.semitone_count);
 
@@ -165,7 +169,7 @@ mod tests {
     }
 
     #[test]
-    fn test_create_interval_string(){
+    fn test_create_interval_string() {
         let interval = create_interval_string("P5");
         assert_eq!(7, interval.semitone_count);
 
@@ -177,33 +181,33 @@ mod tests {
     }
 
     #[test]
-    fn test_create_rand_interval(){
+    fn test_create_rand_interval() {
         let interval_result = create_rand_interval();
-        assert!(interval_result.is_ok());        
+        assert!(interval_result.is_ok());
     }
 
     fn mock_create_rand_interval() -> Result<Interval, IntervalError> {
         Interval::from_semitone(4)
     }
 
-    fn mock_create_note_from_rand_interval(note: Note)-> (Note, Interval) {
+    fn mock_create_note_from_rand_interval(note: Note) -> (Note, Interval) {
         let interval_result = mock_create_rand_interval();
         let interval = match interval_result {
             Ok(interval) => interval,
             Err(_error) => Interval::default(),
         };
-    
+
         //println!("Random Interval is {:?}", interval);
         let new_note = interval.second_note_from(note);
         (new_note, interval)
     }
 
     #[test]
-    fn test_create_note_from_rand_interval(){
+    fn test_create_note_from_rand_interval() {
         let pitch = Pitch::new(NoteLetter::B, 0);
         let note = Note::new(pitch, 4);
 
-        let(note2, interval) = mock_create_note_from_rand_interval(note);
+        let (note2, interval) = mock_create_note_from_rand_interval(note);
 
         let note2_pitch = note2.pitch.into_u8();
         assert_eq!(3, note2_pitch);
@@ -211,7 +215,7 @@ mod tests {
     }
 
     #[test]
-    fn test_create_note_from_given_interval(){
+    fn test_create_note_from_given_interval() {
         let pitch = Pitch::new(NoteLetter::F, 0);
         let root = Note::new(pitch, 4);
         let interval = Interval::from_semitone(10).unwrap();

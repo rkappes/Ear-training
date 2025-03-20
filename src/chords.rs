@@ -1,13 +1,13 @@
 extern crate rust_music_theory as rustmt;
+use crate::notes::create_rand_pitch;
 use rustmt::chord::{Chord, Number, Quality};
 use rustmt::note::Pitch;
-use crate::notes::create_rand_pitch;
 
 /// Creates an random Number value to be used in chord creation
 /// This 'Number' is an enum of chord types from rust-music-theory Chord::Number
 /// ### Returns
 /// - a Number, aka chord type
-fn rand_number() -> Number{
+fn rand_number() -> Number {
     let numbers = [Number::Triad, Number::Seventh];
     numbers[rand::random_range(..numbers.len())]
 }
@@ -18,7 +18,12 @@ fn rand_number() -> Number{
 /// ### Returns
 /// - a chord Quality
 fn rand_quality_triad() -> Quality {
-    let qualities = [Quality::Major, Quality::Minor, Quality::Diminished, Quality::Augmented]; 
+    let qualities = [
+        Quality::Major,
+        Quality::Minor,
+        Quality::Diminished,
+        Quality::Augmented,
+    ];
     qualities[rand::random_range(..qualities.len())]
 }
 
@@ -28,31 +33,37 @@ fn rand_quality_triad() -> Quality {
 /// ### Returns
 /// - a chord Quality
 fn rand_quality_seventh() -> Quality {
-    let qualities = [Quality::Major, Quality::Minor, Quality::Diminished, Quality::Augmented, Quality::HalfDiminished,Quality::Dominant];
+    let qualities = [
+        Quality::Major,
+        Quality::Minor,
+        Quality::Diminished,
+        Quality::Augmented,
+        Quality::HalfDiminished,
+        Quality::Dominant,
+    ];
     qualities[rand::random_range(..qualities.len())]
 }
 
 /// Creates a random chord
 /// ### Returns
 /// - a chord type
-pub fn rand_chord() -> Chord{
+pub fn rand_chord() -> Chord {
     let number = rand_number();
-    let quality = if number == Number::Triad{
+    let quality = if number == Number::Triad {
         rand_quality_triad()
-    }
-    else{
+    } else {
         rand_quality_seventh()
     };
-    
+
     let pitch = create_rand_pitch();
 
     //println!("In rand_chord, pitch is {}, number is {} and quality is {}", pitch, number, quality);
 
     Chord::new(pitch, quality, number)
-} 
+}
 
 /// Applies a random inversion to a given chord
-/// Inversion are: 0 (root), 1 (first inversion), 2 (second inversion), 
+/// Inversion are: 0 (root), 1 (first inversion), 2 (second inversion),
 /// 3 (third inversion - seven chords only)
 /// ### Returns
 /// - a chord type
@@ -62,7 +73,7 @@ pub fn rand_inversion(chord: Chord) -> Chord {
     let number = chord.number;
     let inversion = rand::random_range(1..4);
     //println!("In rand_inversion, inversion is {}", inversion);
-    Chord::with_inversion(root, quality, number,inversion)
+    Chord::with_inversion(root, quality, number, inversion)
 }
 
 /// Code duplicated from the Chord::from_interval function in rust-music-theory crate
@@ -100,9 +111,10 @@ fn create_from_intervals(root: Pitch, interval: &[u8]) -> Chord {
         [4, 3, 3, 4, 3, 4] => (Dominant, Thirteenth),
         [4, 3, 4, 3, 3, 4] => (Major, Thirteenth),
         [3, 4, 3, 4, 3, 4] => (Minor, Thirteenth),
-        _ => {println!("Couldn't create chord! Using CMaj Triad instead");
+        _ => {
+            println!("Couldn't create chord! Using CMaj Triad instead");
             return Chord::default();
-        },
+        }
     };
     Chord::new(root, quality, number)
 }
@@ -116,7 +128,7 @@ fn create_from_intervals(root: Pitch, interval: &[u8]) -> Chord {
 /// - string representation of the chord notes. Ex "C E G"
 /// ### Returns
 /// - a Chord
-pub fn create_chord(string: & str) -> Chord{
+pub fn create_chord(string: &str) -> Chord {
     // Chord::from_string(string)
     let notes: Vec<Pitch> = string
         .replace(",", "")
@@ -124,10 +136,11 @@ pub fn create_chord(string: & str) -> Chord{
         .map(|x| Pitch::from_str(x).unwrap_or_else(|| panic!("Invalid note {:?}.", x)))
         .collect();
 
-    let intervals: Vec<u8> = notes.iter()
+    let intervals: Vec<u8> = notes
+        .iter()
         .map(|&x| Pitch::into_u8(x) % 12)
         .zip(notes[1..].iter().map(|&x| Pitch::into_u8(x)))
-        .map(|(x, y)| if x < y {y - x} else {y + 12 - x})
+        .map(|(x, y)| if x < y { y - x } else { y + 12 - x })
         .collect();
 
     create_from_intervals(notes[0], &intervals)
@@ -139,45 +152,43 @@ mod tests {
     use super::*;
     use rust_music_theory::note::NoteLetter;
 
-    fn mock_rand_number() -> Number{
+    fn mock_rand_number() -> Number {
         Number::Triad
     }
 
-    fn mock_rand_quality_triad() -> Quality{
+    fn mock_rand_quality_triad() -> Quality {
         Quality::Major
     }
 
-    fn mock_rand_quality_seventh() -> Quality{
+    fn mock_rand_quality_seventh() -> Quality {
         Quality::Minor
     }
 
-    fn mock_create_rand_pitch() -> Pitch{
+    fn mock_create_rand_pitch() -> Pitch {
         Pitch::new(NoteLetter::A, 0)
     }
-    
-    fn mock_rand_chord() ->Chord{
+
+    fn mock_rand_chord() -> Chord {
         let number = mock_rand_number();
-        let quality = if number == Number::Triad{
+        let quality = if number == Number::Triad {
             mock_rand_quality_triad()
-        }
-        else{
+        } else {
             mock_rand_quality_seventh()
         };
-        
+
         let pitch = mock_create_rand_pitch();
-    
+
         //println!("In rand_chord, pitch is {}, number is {} and quality is {}", pitch, number, quality);
-    
+
         Chord::new(pitch, quality, number)
     }
 
     #[test]
-    fn test_rand_chord(){
+    fn test_rand_chord() {
         let chord = mock_rand_chord();
         let number = chord.number;
         let quality = chord.quality;
         assert_eq!(number, Number::Triad);
         assert_eq!(quality, Quality::Major);
     }
-
 }
