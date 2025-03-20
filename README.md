@@ -1,22 +1,27 @@
 # Ear-training
 
 ## Description
-The purpose of this program is to be used for ear training. For many musicians, it’s important to be able to identify different musical intervals and chord types (and their inversions) by ear. This program would work for these 13 different intervals:
-1. Minor 2nd
-2. Major 2nd
-3. Minor 3rd
-4. Major 3rd
-5. Perfect 4th
-6. Perfect 5th
-7. Minor 6th
-8. Major 6th
-9. Minor 7th
-10. Major 7th
-11. Octave
-12. Diminished
-13. Augmented
+The purpose of this program is to be used as an ear training tool. It is assumed that anyone who uses this is familiar with intervals and chords in music. 
+
+This program will use/accept these intervals: 
+1. Unison
+2. Minor 2nd (m2)
+3. Major 2nd (M2)
+4. Minor 3rd (m3)
+5. Major 3rd (M3)
+6. Diminished 4th (D4)
+7. Perfect 4th (P4)
+8. Augmented 4th (A4)
+9. Diminished 5th (D5)
+10. Perfect 5th (P5)
+11. Augmented 5th (A5)
+12. Minor 6th (m6)
+13. Major 6th (M6)
+14. Minor 7th (m7)
+15. Major 7th (M7)
+16. Octave
     
-And 9 different chord types (for triads and seven chords):
+And these different chord types (for triads and seven chords):
 1. Major
 2. Minor
 3. Diminished
@@ -34,7 +39,33 @@ And lastly the possible inversions:
 4. Third (seven chords only)
 
 ## Usage
-Users will have the option of guessing a randomized interval or chord (which will be played), as well as inputting a specific interval or chord to be heard. The program will verify the corectness of a user's guess, and output the notes used. 
+Users have the option to:
+1. Hear a random interval - Guess the interval
+2. Hear a random Interval from a given note - Guess 2nd note
+3. Hear a given interval from random note
+4. Randomly invert a given chord - Guess the inversion
+5. Hear a random chord - Guess the chord type
+
+The program will play and output the notes used. 
+
+## Compile and Run
+After cloning the repo, use ` cargo build ` and ` cargo run `
+
+### There are 2 different ways to run this program
+
+1. Use `cargo run` and follow in-program prompts
+2. Use with command-line arguments
+   - `cargo run -- random interval` will play a random interval
+   - `cargo run -- random chord` will play a random chord
+   - `cargo run -- given interval YOUR_INPUT` where YOUR_INPUT is:
+     - an interval, to hear this interval played `cargo run -- given interval P5` or `cargo run -- given interval octave`
+   - `cargo run -- given note YOUR_INPUT` where YOUR_INPUT could be:
+     -  a single note to hear a random interval from this given note `cargo run -- given note c#` 
+     - notes constituting a chord, to hear a random inversion of this chord `cargo run -- given note "c e g"` or `cargo run -- given note "b d# f a"`
+         - Please note that the chord notes should be contained within a string " "
+
+## Tests
+Tests are included. To run these `cargo test`
 
 ## License
 MIT + Apache 2.0 
