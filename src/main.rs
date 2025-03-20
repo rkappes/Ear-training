@@ -33,6 +33,10 @@ fn main() {
         } else if choice_type.to_lowercase() == "random" && option.to_lowercase() == "chord" {
             choice = String::from("5");
         }
+        else{
+            process::exit(1);
+        }
+        res = String::from("n");
     } else if args.len() == 4 {
         let choice_type = &args[1];
         let option = &args[2];
@@ -258,7 +262,7 @@ fn main() {
         if res.trim() == "n" {
             break;
         }
-
+    
         root.clear();
         interval.clear();
         guess.clear();
