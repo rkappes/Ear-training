@@ -21,10 +21,10 @@ lazy_static! {
 pub fn validate_input(input: &str)->u8{
     //TODO: trime leading and trailing whitespace and replace ',' with ''
     let input = input.replace(',', "");
-    let notes = input.trim().split_whitespace();
+    let notes = input.split_whitespace();
     let mut count = 0;
     for note in notes {
-        match REGEX_PITCH.find(&note){
+        match REGEX_PITCH.find(note){
             Some(_m) => count += 1,
             None => return 0
         }
@@ -144,14 +144,7 @@ pub fn create_rand_pitch() -> Pitch{
 /// - An Option of type Note
 pub fn create_note(letter: &str) -> Option<Note> {
     //println!("In create_note, letter is {}", letter);
-    //TODO: check what happends if pitch created is double sharp or double flat
-    if let Some(pitch) = Pitch::from_str(letter.trim()){ //NOTE: use impl FromStr instead?
-    //println!("result from_str is {:?}", pitch);
-    //match result {
-        Some(Note::new(pitch, 4)) 
-    }else{
-        None
-    }
+    Pitch::from_str(letter.trim()).map(|pitch| Note::new(pitch, 4))
 }
 
 /// Creates a random note in octave 4
@@ -172,24 +165,22 @@ pub fn get_note_letter(note: Note) -> String {
     let octave = note.octave.to_string();
     let letter = pitch.letter;
     let accidental = pitch.accidental;
-    let char_letter: char;
-    let char_accidental: char;
-    match letter {
-        NoteLetter::A => char_letter = 'A',
-        NoteLetter::B => char_letter ='B',
-        NoteLetter::C => char_letter ='C',
-        NoteLetter::D => char_letter ='D',
-        NoteLetter::E => char_letter ='E',
-        NoteLetter::F => char_letter ='F',
-        NoteLetter::G => char_letter ='G',
-    }
+    let char_letter: char = match letter {
+        NoteLetter::A => 'A',
+        NoteLetter::B => 'B',
+        NoteLetter::C => 'C',
+        NoteLetter::D => 'D',
+        NoteLetter::E => 'E',
+        NoteLetter::F => 'F',
+        NoteLetter::G => 'G',
+    };
 
-    match accidental {
-        1 => char_accidental='#',
-        2 => char_accidental='x',
-        -1 => char_accidental='b',
-        _=> char_accidental = '\0'
-    }
+    let char_accidental: char = match accidental {
+        1 => '#',
+        2 => 'x',
+        -1 => 'b',
+        _=> '\0'
+    };
 
     let mut result = String::new(); 
     result.push(char_letter);  

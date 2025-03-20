@@ -127,14 +127,14 @@ fn main() {
             if notes::validate_input(&root) == 0{
                 println!("invalid note detected");
             } else {
-                let root: &str = &root.trim();
+                let root: &str = root.trim();
                 if let Some(note1) = notes::create_note(root){
                     let (note2, interval) = intervals::create_note_from_rand_interval(note1.clone());
 
                     let note2_string = notes::get_note_letter(note2);
                     let root_string = notes::get_note_letter(note1.clone());
                     let root_hz = notes::get_hz(&root_string, &btree);
-                    let note2_hz = notes::get_hz(&note2_string.trim(), &btree);
+                    let note2_hz = notes::get_hz(note2_string.trim(), &btree);
         
                     if root_hz > 0.0 && note2_hz > 0.0{
                         let notes: Vec<f32> = vec![root_hz, note2_hz];
@@ -157,7 +157,7 @@ fn main() {
         }
         else if choice.trim() == "3"{
             if args.len() == 1 {
-                println!("Enter the interval you want to use. Ex. M3, P5, m6, A4...etc");
+                println!("Enter the interval you want to use. Ex. M3, P5, m6...etc. For a unison or octave, use 'unison', 'octave' ");
                 get_input(&mut interval);
             }
 
@@ -166,7 +166,7 @@ fn main() {
                 let root = notes::rand_note();
                 let root_string = notes::get_note_letter(root.clone());
 
-                let interval_type = intervals::create_interval_string(&interval.trim());
+                let interval_type = intervals::create_interval_string(interval.trim());
                 let note2 = intervals::create_note_from_given_interval(root, interval_type, &mut String::from("Up"));
 
                 let note2_string = notes::get_note_letter(note2);
@@ -254,7 +254,7 @@ fn main() {
         }
 
         if args.len() == 1{
-            println!("Again? y/n");
+            println!("Choose again? y/n");
 
             get_input(&mut res);
             println!("res is {}", res);

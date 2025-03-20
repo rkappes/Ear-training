@@ -22,7 +22,6 @@ pub fn play_notes(notes: Vec<f32>){
         
         match stream_handle.play_raw(new_source.clone()) {
             Ok(_) => {
-                ()
             }
             Err(e) =>{
                 println!("Error playing note.{} ", e)

@@ -24,12 +24,11 @@ lazy_static! {
 }
 
 pub fn check_if_interval(input: &str)->bool{
-    //TODO: trime leading and trailing whitespace and replace ',' with ''
     let input = input.replace(',', "");
-    let notes = input.trim().split_whitespace();
+    let notes = input.split_whitespace();
     let mut count = 0;
     for note in notes {
-        match REGEX_INTERVAL.find(&note){
+        match REGEX_INTERVAL.find(note){
             Some(_m) => count += 1,
             None => {
                 println!("Interval {}, not valid", note);
@@ -58,13 +57,8 @@ fn rand_semitone() -> u8 {
 fn create_interval_semitones(semitones: u8) -> Interval{
 
     let interval_result = Interval::from_semitone(semitones);
-    let interval = match interval_result {
-        Ok(interval) => interval,
-        Err(_error) => Interval::default(),
-    };
+    interval_result.unwrap_or_default()
     //println!("Interval is {:?}", interval);
-
-    interval
 }
 
 /// Creates an interval given a string value: m3, M6, P5..etc
@@ -76,26 +70,25 @@ fn create_interval_semitones(semitones: u8) -> Interval{
 /// - Interval type 
 pub fn create_interval_string(interval: &str) -> Interval{
     //println!("In create_Interval_string, interval is {}", interval);
-    let semitones: u8;
-    match interval.trim() {
-        "unison" => semitones = 0,
-        "m2" => semitones = 1,
-        "M2" => semitones =2,
-        "m3" => semitones =3,
-        "M3" | "d4" | "D4" => semitones =4,
-        "P4" | "p4" => semitones =5,
-        "A4" | "a4" | "d5" | "D5" => semitones = 6,
-        "P5" | "p5" => semitones = 7,
-        "m6" | "A5" | "a5" => semitones =8,
-        "M6" => semitones =9,
-        "m7" => semitones =10,
-        "M7" => semitones =11,
-        "octave" => semitones =12,
+    let semitones: u8 = match interval.trim() {
+        "unison" => 0,
+        "m2" => 1,
+        "M2" => 2,
+        "m3" => 3,
+        "M3" | "d4" | "D4" => 4,
+        "P4" | "p4" => 5,
+        "A4" | "a4" | "d5" | "D5" => 6,
+        "P5" | "p5" => 7,
+        "m6" | "A5" | "a5" => 8,
+        "M6" => 9,
+        "m7" => 10,
+        "M7" => 11,
+        "octave" => 12,
         _=> {
             println!("Unable to create interval from {}, defaulting to unison", interval);
-            semitones = 0 //TODO: Return an error or do something else?
+            0 //TODO: Return an error or do something else?
         }
-    }
+    };
 
     create_interval_semitones(semitones)
 }
@@ -106,8 +99,7 @@ pub fn create_interval_string(interval: &str) -> Interval{
 /// - a Result type for Interval
 fn create_rand_interval() -> Result<Interval, IntervalError> {
     let semitone = rand_semitone();
-    let interval_result = Interval::from_semitone(semitone);
-    interval_result
+    Interval::from_semitone(semitone)
 }
 
 ///Creates a note that is a random interval above a given note
@@ -117,10 +109,7 @@ fn create_rand_interval() -> Result<Interval, IntervalError> {
 /// - A tuple of a Note type (the 2nd note) and the random interval used
 pub fn create_note_from_rand_interval(root: Note) -> (Note, Interval) {
     let interval_result = create_rand_interval();
-    let interval = match interval_result {
-        Ok(interval) => interval,
-        Err(_error) => Interval::default(),
-    };
+    let interval = interval_result.unwrap_or_default();
 
     //println!("Random Interval is {:?}", interval);
     let new_note = interval.second_note_from(root);
@@ -137,13 +126,12 @@ pub fn create_note_from_rand_interval(root: Note) -> (Note, Interval) {
 pub fn create_note_from_given_interval(root: Note, interval: Interval, direction: &mut String) -> Note {
     direction.make_ascii_lowercase();
     //TODO: add error checking for if direciton is not valid?
-    let note =  if direction == "down" {
+    if direction == "down" {
         interval.second_note_down_from(root)
     }
     else{
         interval.second_note_from(root)
-    };
-    note
+    }
 }
 
 

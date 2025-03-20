@@ -9,8 +9,7 @@ use crate::notes::create_rand_pitch;
 /// - a Number, aka chord type
 fn rand_number() -> Number{
     let numbers = [Number::Triad, Number::Seventh];
-    let number = numbers[rand::random_range(..numbers.len())];
-    number
+    numbers[rand::random_range(..numbers.len())]
 }
 
 /// Creates a random quality to be used in triad chord creation
@@ -20,8 +19,7 @@ fn rand_number() -> Number{
 /// - a chord Quality
 fn rand_quality_triad() -> Quality {
     let qualities = [Quality::Major, Quality::Minor, Quality::Diminished, Quality::Augmented]; 
-    let quality = qualities[rand::random_range(..qualities.len())];
-    quality
+    qualities[rand::random_range(..qualities.len())]
 }
 
 /// Creates a random quality to be used in seven chord creation
@@ -31,8 +29,7 @@ fn rand_quality_triad() -> Quality {
 /// - a chord Quality
 fn rand_quality_seventh() -> Quality {
     let qualities = [Quality::Major, Quality::Minor, Quality::Diminished, Quality::Augmented, Quality::HalfDiminished,Quality::Dominant];
-    let quality = qualities[rand::random_range(..qualities.len())];
-    quality
+    qualities[rand::random_range(..qualities.len())]
 }
 
 /// Creates a random chord
@@ -80,29 +77,29 @@ pub fn rand_inversion(chord: Chord) -> Chord {
 fn create_from_intervals(root: Pitch, interval: &[u8]) -> Chord {
     use Number::*;
     use Quality::*;
-    let (quality, number) = match interval {
-        &[4, 3] => (Major, Triad),
-        &[3, 4] => (Minor, Triad),
-        &[2, 5] => (Suspended2, Triad),
-        &[5, 2] => (Suspended4, Triad),
-        &[4, 4] => (Augmented, Triad),
-        &[3, 3] => (Diminished, Triad),
-        &[4, 3, 4] => (Major, Seventh),
-        &[3, 4, 3] => (Minor, Seventh),
-        &[4, 4, 2] => (Augmented, Seventh),
-        &[4, 4, 3] => (Augmented, MajorSeventh),
-        &[3, 3, 3] => (Diminished, Seventh),
-        &[3, 3, 4] => (HalfDiminished, Seventh),
-        &[3, 4, 4] => (Minor, MajorSeventh),
-        &[4, 3, 3] => (Dominant, Seventh),
-        &[4, 3, 3, 4] => (Dominant, Ninth),
-        &[4, 3, 4, 3] => (Major, Ninth),
-        &[4, 3, 3, 4, 4] => (Dominant, Eleventh),
-        &[4, 3, 4, 3, 3] => (Major, Eleventh),
-        &[3, 4, 3, 4, 3] => (Minor, Eleventh),
-        &[4, 3, 3, 4, 3, 4] => (Dominant, Thirteenth),
-        &[4, 3, 4, 3, 3, 4] => (Major, Thirteenth),
-        &[3, 4, 3, 4, 3, 4] => (Minor, Thirteenth),
+    let (quality, number) = match *interval {
+        [4, 3] => (Major, Triad),
+        [3, 4] => (Minor, Triad),
+        [2, 5] => (Suspended2, Triad),
+        [5, 2] => (Suspended4, Triad),
+        [4, 4] => (Augmented, Triad),
+        [3, 3] => (Diminished, Triad),
+        [4, 3, 4] => (Major, Seventh),
+        [3, 4, 3] => (Minor, Seventh),
+        [4, 4, 2] => (Augmented, Seventh),
+        [4, 4, 3] => (Augmented, MajorSeventh),
+        [3, 3, 3] => (Diminished, Seventh),
+        [3, 3, 4] => (HalfDiminished, Seventh),
+        [3, 4, 4] => (Minor, MajorSeventh),
+        [4, 3, 3] => (Dominant, Seventh),
+        [4, 3, 3, 4] => (Dominant, Ninth),
+        [4, 3, 4, 3] => (Major, Ninth),
+        [4, 3, 3, 4, 4] => (Dominant, Eleventh),
+        [4, 3, 4, 3, 3] => (Major, Eleventh),
+        [3, 4, 3, 4, 3] => (Minor, Eleventh),
+        [4, 3, 3, 4, 3, 4] => (Dominant, Thirteenth),
+        [4, 3, 4, 3, 3, 4] => (Major, Thirteenth),
+        [3, 4, 3, 4, 3, 4] => (Minor, Thirteenth),
         _ => {println!("Couldn't create chord! Using CMaj Triad instead");
             return Chord::default();
         },
@@ -121,11 +118,10 @@ fn create_from_intervals(root: Pitch, interval: &[u8]) -> Chord {
 /// - a Chord
 pub fn create_chord(string: & str) -> Chord{
     // Chord::from_string(string)
-    let notes: Vec<Pitch> = string.to_string()
+    let notes: Vec<Pitch> = string
         .replace(",", "")
         .split_whitespace()
-        .into_iter()
-        .map(|x| Pitch::from_str(x).expect(&format!("Invalid note {:?}.", x)))
+        .map(|x| Pitch::from_str(x).unwrap_or_else(|| panic!("Invalid note {:?}.", x)))
         .collect();
 
     let intervals: Vec<u8> = notes.iter()
