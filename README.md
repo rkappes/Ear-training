@@ -57,10 +57,12 @@ After cloning the repo, use ` cargo build ` and ` cargo run `
 2. Use with command-line arguments
    - `cargo run -- random interval` will play a random interval
    - `cargo run -- random chord` will play a random chord
-   - `cargo run -- given YOUR_INPUT` where YOUR_INPUT could be:
-     - a single note to hear a random interval from this given note `cargo run -- given c#` 
-     - an interval to hear this interval played `cargo run -- given P5` or `cargo run -- given octave`
-     - notes constitutin a chord, to hear a random inversion of this chord `cargo run -- given "c e g"` or `cargo run -- given "b d# f a"`
+   - `cargo run -- given interval YOUR_INPUT` where YOUR_INPUT is:
+     - an interval, to hear this interval played `cargo run -- given interval P5` or `cargo run -- given interval octave`
+   - `cargo run -- given note YOUR_INPUT` where YOUR_INPUT could be:
+     -  a single note to hear a random interval from this given note `cargo run -- given note c#` 
+     - notes constituting a chord, to hear a random inversion of this chord `cargo run -- given note "c e g"` or `cargo run -- given note "b d# f a"`
+         - Please note that the chord notes should be contained within a string " "
 
 ## Tests
 Tests are included. To run these `cargo test`
