@@ -32,8 +32,7 @@ fn main() {
             choice = String::from("1");
         } else if choice_type.to_lowercase() == "random" && option.to_lowercase() == "chord" {
             choice = String::from("5");
-        }
-        else{
+        } else {
             process::exit(1);
         }
         res = String::from("n");
@@ -262,7 +261,7 @@ fn main() {
         if res.trim() == "n" {
             break;
         }
-    
+
         root.clear();
         interval.clear();
         guess.clear();
