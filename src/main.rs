@@ -32,26 +32,37 @@ fn main() {
             choice = String::from("1");
         } else if choice_type.to_lowercase() == "random" && option.to_lowercase() == "chord" {
             choice = String::from("5");
-        } else if choice_type.to_lowercase() == "given" {
-            if option.contains("unison")
-                || option.contains("octave")
-                || intervals::check_if_interval(option)
-            {
-                interval = String::from(option);
-                choice = String::from("3");
-            } else {
-                let note_count = notes::validate_input(option);
+        }
+    }
 
-                if note_count == 1 {
-                    choice = String::from("2");
-                    root = String::from(option);
-                } else if note_count == 3 || note_count == 4 {
-                    choice = String::from("4");
-                    chord = String::from(option);
-                } else {
-                    println!("Invalid note detected, or too many or too little notes given. Number of notes can be 1 (single note), 3 (triad) or 4 (seven chord)");
-                    process::exit(1);
-                }
+    else if args.len() == 4 {
+        let choice_type = &args[1];
+        let option = &args[2];
+        let input = &args[3];
+
+        if choice_type.to_lowercase() == "given" && option.to_lowercase() == "interval"{
+            if input.contains("unison")
+                || input.contains("octave")
+                || intervals::check_if_interval(input)
+            {
+                interval = String::from(input);
+                choice = String::from("3");
+            }
+            else{
+                process::exit(1);
+            }
+        } else if choice_type.to_lowercase() == "given" && option.to_lowercase() == "note"{
+            let note_count = notes::validate_input(input);
+
+            if note_count == 1 {
+                choice = String::from("2");
+                root = String::from(input);
+            } else if note_count == 3 || note_count == 4 {
+                choice = String::from("4");
+                chord = String::from(input);
+            } else {
+                println!("Invalid note detected, or too many or too little notes given. Number of notes can be 1 (single note), 3 (triad) or 4 (seven chord)");
+                process::exit(1);
             }
         } else {
             println!("Command arguments not valid, exiting");
@@ -61,7 +72,7 @@ fn main() {
         // When running with command line args, do not want to run loop
         res = String::from("n");
     } else if args.len() != 1 {
-        println!("Number of args passed not valid. Expected 2 or 0 arguments");
+        println!("Number of args passed not valid. Expected 0, 2, or 3 arguments");
         process::exit(1);
     }
 
