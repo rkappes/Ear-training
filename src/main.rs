@@ -190,7 +190,6 @@ fn main() {
                 println!("Enter the notes you want to use in the chord. Ex. 'C E G'");
                 get_input(&mut chord);
             }
-            //TODO: create_chord will panic if it can't create chord
             if notes::validate_input(&chord) == 0{ // check that user enteres max of 4 notes
                 println!("invalid note detected");
             } else {
@@ -233,7 +232,7 @@ fn main() {
 
             for note in notes_in_chord.into_iter() {
                 let letter = notes::get_note_letter(note);
-                println!("note letter is {}", letter);
+                //println!("note letter is {}", letter);
                 let note_hz = notes::get_hz(&letter, &btree);
 
                 if note_hz > 0.0 {

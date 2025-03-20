@@ -1,23 +1,8 @@
 extern crate rust_music_theory as rustmt;
 use rustmt::note::Note;
-use rustmt::interval::{Interval, IntervalError}; //, Number, Quality};
+use rustmt::interval::{Interval, IntervalError};
 use lazy_static::lazy_static;
 use regex::Regex;
-/* 
-/// Returns a random Quality type, using rust-music-theory Quality enum.
-fn rand_quality() -> Quality {
-    let qualities = [Quality::Major, Quality::Minor, Quality::Perfect, Quality::Augmented, Quality::Diminished];
-    let quality = qualities[rand::random_range(..qualities.len())];
-    quality
-}
-
-/// Returns a random interval(2nd, 4th, 6th..etc), using rust-music-theory Number enum.
-fn rand_interval() -> Number {
-    let intervals = [Number::Unison, Number::Second, Number::Third, Number::Fourth, Number::Fifth, Number::Sixth, Number::Seventh, Number::Octave];
-    let interval = intervals[rand::random_range(..intervals.len())];
-    interval
-}
-*/
 
 lazy_static! {
     static ref REGEX_INTERVAL: Regex = Regex::new("^[Mm][2367]$|^[PpAaDd][45]$").unwrap();
@@ -86,7 +71,7 @@ pub fn create_interval_string(interval: &str) -> Interval{
         "octave" => 12,
         _=> {
             println!("Unable to create interval from {}, defaulting to unison", interval);
-            0 //TODO: Return an error or do something else?
+            0
         }
     };
 
@@ -125,7 +110,6 @@ pub fn create_note_from_rand_interval(root: Note) -> (Note, Interval) {
 /// - A Note type (the 2nd note)
 pub fn create_note_from_given_interval(root: Note, interval: Interval, direction: &mut String) -> Note {
     direction.make_ascii_lowercase();
-    //TODO: add error checking for if direciton is not valid?
     if direction == "down" {
         interval.second_note_down_from(root)
     }

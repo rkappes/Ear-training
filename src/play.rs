@@ -6,7 +6,7 @@ use std::time::Duration;
 
 /// Plays the given pitches individually and together
 /// Source: https://github.com/RustAudio/rodio/blob/f1eaaa4a6346933fc8a58d5fd1ace170946b3a94/examples/mix_multiple_sources.rs
-/// Changed made to take an vec of note frequencies to play
+/// Changes made to take an vec of note frequencies to play
 /// ### Parameters
 /// - A vec of f32 types which should be note frequencies
 pub fn play_notes(notes: Vec<f32>){
