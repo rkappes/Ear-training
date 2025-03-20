@@ -57,15 +57,26 @@ After cloning the repo, use ` cargo build ` and ` cargo run `
 2. Use with command-line arguments
    - `cargo run -- random interval` will play a random interval
    - `cargo run -- random chord` will play a random chord
-   - `cargo run -- given interval YOUR_INPUT` where YOUR_INPUT is:
-     - an interval, to hear this interval played `cargo run -- given interval P5` or `cargo run -- given interval octave`
-   - `cargo run -- given note YOUR_INPUT` where YOUR_INPUT could be:
-     -  a single note to hear a random interval from this given note `cargo run -- given note c#` 
+   - `cargo run -- given interval YOUR_INPUT` to hear an interval, where YOUR_INPUT is:
+     - an interval `cargo run -- given interval P5` or `cargo run -- given interval octave`
+         - To hear a unison or octave, please use 'unison' or 'octave'.
+         - Augmented and Diminished should only be used with perfect intervals. Ex. A4, d5
+         - Other intervals can use typical notation (M3, m6, P5)   
+   - `cargo run -- given note YOUR_INPUT` to hear a random interval from this given note. Where YOUR_INPUT could be:
+     -  a single note  `cargo run -- given note c#` 
      - notes constituting a chord, to hear a random inversion of this chord `cargo run -- given note "c e g"` or `cargo run -- given note "b d# f a"`
          - Please note that the chord notes should be contained within a string " "
 
 ## Tests
 Tests are included. To run these `cargo test`
+
+## Comments
+Overall the process of using the rust-music-theory crate to create notes, intervals, and chords went smoother than anticipated. At the start of development, I did have an issue where I wasn't able to access some of the  modules (interval Number and Quality) needed to create intervals. This was solved by pulling the crate directly from the github repo versus crate.io. I beleive that the latest changes to the git repo (made 7 months ago) have not made it to the crate.io version. 
+There were also some functions used from the rust-music-theory crate that would panic if invalid input was used. So finding a way to manage this so _my_ program would not panic was something.
+
+Even using rodio crate to play-back the pitches was less challengeing to figure out than anticipated. I did have to map each note to their corresponding frequency. I was not sure how many octaves and the best way to store this information would be. I used a BTree as I wanted to be able to search the note name and retreive the frequency, but this tree does need to be constructed each time the program runs. 
+
+The most challenging parts were accounting for enharmonic note spellings and equivalent intervals (Ex. augmented fourth is the same as a diminished 5th) and checking user input (if a valid note or interval was entered).  
 
 ## License
 MIT + Apache 2.0 
