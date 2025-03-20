@@ -33,25 +33,22 @@ fn main() {
         } else if choice_type.to_lowercase() == "random" && option.to_lowercase() == "chord" {
             choice = String::from("5");
         }
-    }
-
-    else if args.len() == 4 {
+    } else if args.len() == 4 {
         let choice_type = &args[1];
         let option = &args[2];
         let input = &args[3];
 
-        if choice_type.to_lowercase() == "given" && option.to_lowercase() == "interval"{
+        if choice_type.to_lowercase() == "given" && option.to_lowercase() == "interval" {
             if input.contains("unison")
                 || input.contains("octave")
                 || intervals::check_if_interval(input)
             {
                 interval = String::from(input);
                 choice = String::from("3");
-            }
-            else{
+            } else {
                 process::exit(1);
             }
-        } else if choice_type.to_lowercase() == "given" && option.to_lowercase() == "note"{
+        } else if choice_type.to_lowercase() == "given" && option.to_lowercase() == "note" {
             let note_count = notes::validate_input(input);
 
             if note_count == 1 {
