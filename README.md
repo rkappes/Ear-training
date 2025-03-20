@@ -76,7 +76,7 @@ There were also some functions used from the rust-music-theory crate that would 
 
 Even using rodio crate to play-back the pitches was less challengeing to figure out than anticipated. I did have to map each note to their corresponding frequency. I was not sure how many octaves and the best way to store this information would be. I used a BTree as I wanted to be able to search the note name and retreive the frequency, but this tree does need to be constructed each time the program runs. 
 
-The most challenging parts were accounting for enharmonic note spellings and equivalent intervals (Ex. augmented fourth is the same as a diminished 5th) and checking user input (if a valid note or interval was entered).  
+The most challenging parts were accounting for enharmonic note spellings and equivalent intervals (Ex. augmented fourth is the same as a diminished 5th) and checking user input (if a valid note or interval was entered). As well as figuring out the logic to get the program to work with the option for command line arguments.
 
 ## License
 MIT + Apache 2.0 
